@@ -88,3 +88,8 @@ public class ClientWindow extends JFrame {
 		});
 	}
 }
+
+//TODO Smilesar
+//TODO Scrollbar
+//TODO Logged in activity
+
