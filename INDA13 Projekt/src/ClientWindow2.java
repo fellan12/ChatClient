@@ -6,7 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ClientWindow extends JFrame {
+public class ClientWindow2 extends JFrame {
 
 	private JPanel panel;
 	private JTextField textField;
@@ -15,7 +15,7 @@ public class ClientWindow extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ClientWindow() {
+	public ClientWindow2() {
 		define();
 	}
 
