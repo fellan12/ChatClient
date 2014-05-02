@@ -29,7 +29,6 @@ public class LoginWindow extends JFrame {
 	private JTextField textIp;
 	private JTextField textName;
 	private JTextField textPort;
-	private boolean error = false;
 
 	/**
 	 * Constructor for LoginWindow
@@ -60,7 +59,7 @@ public class LoginWindow extends JFrame {
 		setResizable(false);
 		setTitle("Login");
 
-		//IP-Adress  - TextField
+		//IP-Address  - TextField
 		textIp = new JTextField();
 		textIp.setBounds(84, 145, 180, 32);
 		panel.add(textIp);
@@ -123,7 +122,8 @@ public class LoginWindow extends JFrame {
 	 * Login sequence
 	 */
 	public void login(String name, String ip, int port){
-		//TODO
+		dispose();
+		new ClientWindow(name, ip, port);
 	}
 
 	/**
