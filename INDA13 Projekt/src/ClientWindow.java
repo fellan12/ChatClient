@@ -17,7 +17,6 @@ public class ClientWindow extends JFrame {
 	 */
 	public ClientWindow() {
 		define();
-		//HEJ
 	}
 
 	public void define(){
