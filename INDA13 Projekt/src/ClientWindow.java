@@ -12,6 +12,7 @@ public class ClientWindow extends JFrame {
 	private String name;
 	private String ip;
 	private int port;
+	private JMenuBar menuBar;
 
 	/**
 	 * Constructor for ClientWindow
@@ -31,22 +32,23 @@ public class ClientWindow extends JFrame {
 	 */
 	public void define(){
 		panel = new JPanel();
+		panel.setAlignmentY(Component.TOP_ALIGNMENT);
 		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		panel.setLayout(null);
 		setContentPane(panel);
 		setTitle("Chatroom");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1000, 800);
-		setResizable(false);					//True if screen objects obey resizing.
+		setResizable(true);					//True if screen objects obey resizing.
 
 
 		//Menubar
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
 		//Menu - File
 		JMenu fileMenu = new JMenu("File");
+		fileMenu.setIconTextGap(8);
 		menuBar.add(fileMenu);
 
 		//MenuItem - Open
@@ -61,23 +63,36 @@ public class ClientWindow extends JFrame {
 			}
 		});
 		fileMenu.add(mt_Exit);
-
-		//Message - TextField
-		JTextField textField = new JTextField();
-		textField.setFont(new Font("Arial", Font.PLAIN, 15));
-		textField.setBounds(7, 691, 859, 30);
-		panel.add(textField);
-		textField.setColumns(10);
-
-		//Send - Button
-		JButton sendButton = new JButton("Send");
-		sendButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
-			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Sent");
-			}
-		});
-		sendButton.setBounds(873, 691, 100, 30);
-		panel.add(sendButton);
+						panel.setLayout(null);
+				
+						//Message - TextField
+						JTextField textField = new JTextField();
+						textField.setBounds(12, 684, 840, 30);
+						textField.setMinimumSize(new Dimension(3, 22));
+						textField.setFont(new Font("Arial", Font.PLAIN, 18));
+						panel.add(textField);
+						textField.setColumns(10);
+						
+								//Send - Button
+								JButton sendButton = new JButton("Send");
+								sendButton.setBounds(864, 685, 106, 30);
+								sendButton.setMargin(new Insets(2, 20, 2, 20));
+								sendButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
+									public void actionPerformed(ActionEvent arg0) {
+										System.out.println("Sent");
+									}
+								});
+								panel.add(sendButton);
+								
+								JPanel panel_1 = new JPanel();
+								panel_1.setBackground(Color.WHITE);
+								panel_1.setForeground(Color.BLACK);
+								panel_1.setBounds(12, 13, 958, 658);
+								panel.add(panel_1);
+								
+								JScrollBar scrollBar = new JScrollBar();
+								scrollBar.setBounds(961, 13, 21, 659);
+								panel.add(scrollBar);
 	}
 }
 
