@@ -35,13 +35,30 @@ public class ClientWindow extends JFrame {
 		panel.setAlignmentY(Component.TOP_ALIGNMENT);
 		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panel);
+		
 		setTitle("Chatroom");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1000, 800);
+		setSize(1000, 800);
 		setResizable(true);					//True if screen objects obey resizing.
-
-
+		
+		//Layout
+		GridBagLayout gbl_panel = new GridBagLayout();
+		gbl_panel.columnWidths = new int[]{40, 940, 20};		//sum = 1000
+		gbl_panel.rowHeights = new int[]{75, 640, 75};			//sum = 800
+		gbl_panel.columnWeights = new double[]{1.0, 1.0, 0.0};
+		gbl_panel.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		panel.setLayout(gbl_panel);
+		
+		JTextArea textHistory = new JTextArea();
+		GridBagConstraints gbc_textHistory = new GridBagConstraints();
+		gbc_textHistory.insets = new Insets(0, 0, 5, 5);
+		gbc_textHistory.fill = GridBagConstraints.BOTH;
+		gbc_textHistory.gridx = 1;
+		gbc_textHistory.gridy = 1;
+		panel.add(textHistory, gbc_textHistory);
+		
+		
 		//Menubar
 		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -63,36 +80,6 @@ public class ClientWindow extends JFrame {
 			}
 		});
 		fileMenu.add(mt_Exit);
-						panel.setLayout(null);
-				
-						//Message - TextField
-						JTextField textField = new JTextField();
-						textField.setBounds(12, 684, 840, 30);
-						textField.setMinimumSize(new Dimension(3, 22));
-						textField.setFont(new Font("Arial", Font.PLAIN, 18));
-						panel.add(textField);
-						textField.setColumns(10);
-						
-								//Send - Button
-								JButton sendButton = new JButton("Send");
-								sendButton.setBounds(864, 685, 106, 30);
-								sendButton.setMargin(new Insets(2, 20, 2, 20));
-								sendButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
-									public void actionPerformed(ActionEvent arg0) {
-										System.out.println("Sent");
-									}
-								});
-								panel.add(sendButton);
-								
-								JPanel panel_1 = new JPanel();
-								panel_1.setBackground(Color.WHITE);
-								panel_1.setForeground(Color.BLACK);
-								panel_1.setBounds(12, 13, 958, 658);
-								panel.add(panel_1);
-								
-								JScrollBar scrollBar = new JScrollBar();
-								scrollBar.setBounds(961, 13, 21, 659);
-								panel.add(scrollBar);
 	}
 }
 
