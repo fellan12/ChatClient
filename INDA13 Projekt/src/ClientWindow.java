@@ -121,10 +121,19 @@ public class ClientWindow extends JFrame {
 		fileMenu.add(menuItemExit);
 	}
 
+	/**
+	 * Print the message to the text history
+	 * 
+	 * @param message
+	 */
 	public void printToScreen(String message){
 		textHistory.append(message + "\n");
 	}
 
+	/**
+	 * Send message to the server and to the 
+	 * @param message
+	 */
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			printToScreen(name + ": " + message);

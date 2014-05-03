@@ -1,29 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.EventQueue;
-import java.awt.Graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.Window.Type;
 
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JScrollBar;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
 
 public class LoginWindow extends JFrame {
 
@@ -96,13 +84,6 @@ public class LoginWindow extends JFrame {
 
 		//Login - Button
 		JButton btnNewButton = new JButton("Login");
-		btnNewButton.addKeyListener(new KeyAdapter() {				//KeyListener for clicking ENTER
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					LoginProcedure();
-				}
-			}
-		});
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
 				LoginProcedure();
@@ -116,12 +97,16 @@ public class LoginWindow extends JFrame {
 	 * Login sequence
 	 * 
 	 * Logging in to the server.
+	 * 
+	 * @param name - the name of the user
+	 * @param ip - the Ip-address to the server
+	 * @param port - the port to the server.
 	 */
 	public void login(String name, String ip, int port){
 		dispose();
 		new ClientWindow(name, ip, port);
 	}
-	
+
 	/**
 	 * Login Procedure
 	 * 
