@@ -14,6 +14,7 @@ public class ClientWindow extends JFrame {
 	private int port;
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
+	private JTextArea textHistory;
 
 	/**
 	 * Constructor for ClientWindow
@@ -23,7 +24,7 @@ public class ClientWindow extends JFrame {
 		this.ip = ip;
 		this.port = port;
 		define();
-
+		outPutOnScreen(name + " is connected on " + ip + ":" + port);
 	}
 
 	/**
@@ -54,7 +55,8 @@ public class ClientWindow extends JFrame {
 		panel.setLayout(layout);
 		
 		//On Screen History - TextArea
-		JTextArea textHistory = new JTextArea();
+		textHistory = new JTextArea();
+		textHistory.setFont(new Font("Arial", Font.PLAIN, 18));
 		textHistory.setEditable(false);
 		GridBagConstraints textHistoryConstrains = new GridBagConstraints();
 		textHistoryConstrains.gridwidth = 2;
@@ -104,6 +106,10 @@ public class ClientWindow extends JFrame {
 			}
 		});
 		fileMenu.add(menuItemExit);
+	}
+	
+	public void outPutOnScreen(String message){
+		textHistory.append(message + "\n");
 	}
 }
 
