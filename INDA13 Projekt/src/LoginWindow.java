@@ -21,6 +21,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollBar;
 import java.awt.event.ContainerAdapter;
 import java.awt.event.ContainerEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class LoginWindow extends JFrame {
@@ -94,24 +96,16 @@ public class LoginWindow extends JFrame {
 
 		//Login - Button
 		JButton btnNewButton = new JButton("Login");
+		btnNewButton.addKeyListener(new KeyAdapter() {				//KeyListener for clicking ENTER
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					LoginProcedure();
+				}
+			}
+		});
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
-					System.out.println("Name: " + textName.getText());
-					System.out.println("IP: " + textIp.getText());
-					System.out.println("Port: " + textPort.getText());
-					String name = textName.getText();
-					String ip = textIp.getText();
-					int port = Integer.parseInt(textPort.getText());
-					login(name, ip, port);
-					System.out.println("Logged in");
-				}else{
-					System.out.println("Error");
-					System.out.println("Name: " + textName.getText());
-					System.out.println("IP: " + textIp.getText());
-					System.out.println("Port: " + textPort.getText());
-					//TODO felhantering: fixa en röd label som säger att inputen är fel
-				}
+				LoginProcedure();
 			}
 		});
 		btnNewButton.setBounds(124, 347, 100, 30);
@@ -120,10 +114,33 @@ public class LoginWindow extends JFrame {
 
 	/**
 	 * Login sequence
+	 * 
+	 * Logging in to the server.
 	 */
 	public void login(String name, String ip, int port){
 		dispose();
 		new ClientWindow(name, ip, port);
+	}
+	
+	/**
+	 * Login Procedure
+	 * 
+	 * Checks that all the inputs are correct
+	 */
+	public void LoginProcedure(){
+		if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
+			String name = textName.getText();
+			String ip = textIp.getText();
+			int port = Integer.parseInt(textPort.getText());
+			login(name, ip, port);
+			System.out.println("Logged in");
+		}else{
+			System.out.println("Error");
+			System.out.println("Name: " + textName.getText());
+			System.out.println("IP: " + textIp.getText());
+			System.out.println("Port: " + textPort.getText());
+			//TODO felhantering: fixa en röd label som säger att inputen är fel
+		}
 	}
 
 	/**

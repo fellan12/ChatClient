@@ -68,6 +68,13 @@ public class ClientWindow extends JFrame {
 
 		//Message Field - TextField
 		txtMessage = new JTextField();
+		txtMessage.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {										//KeyListener for clicking ENTER
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					sendMessage(txtMessage.getText());
+				}
+			}
+		});
 		GridBagConstraints txtMessageConstrains = new GridBagConstraints();
 		txtMessageConstrains.fill = GridBagConstraints.HORIZONTAL;
 		txtMessageConstrains.insets = new Insets(0, 0, 0, 5);
@@ -80,12 +87,9 @@ public class ClientWindow extends JFrame {
 		//Send - Button
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String sendMessage = txtMessage.getText();
-				if(sendMessage.length() > 0 ){
-					printToScreen(name + ": " + sendMessage);
-					txtMessage.setText("");
-				}
+			public void actionPerformed(ActionEvent arg0) {								//ActionListener for clicking button
+				sendMessage(txtMessage.getText());
+				txtMessage.requestFocusInWindow();
 			}
 		});
 		GridBagConstraints sendButtonConstrains = new GridBagConstraints();
@@ -119,6 +123,13 @@ public class ClientWindow extends JFrame {
 
 	public void printToScreen(String message){
 		textHistory.append(message + "\n");
+	}
+
+	public void sendMessage(String message){
+		if(message.length() > 0 ){
+			printToScreen(name + ": " + message);
+			txtMessage.setText("");
+		}
 	}
 }
 
