@@ -55,6 +55,7 @@ public class ClientWindow extends JFrame {
 		
 		//On Screen History - TextArea
 		JTextArea textHistory = new JTextArea();
+		textHistory.setEditable(false);
 		GridBagConstraints textHistoryConstrains = new GridBagConstraints();
 		textHistoryConstrains.gridwidth = 2;
 		textHistoryConstrains.insets = new Insets(0, 0, 5, 5);
@@ -72,6 +73,7 @@ public class ClientWindow extends JFrame {
 		txtMessageConstrains.gridy = 2;
 		panel.add(txtMessage, txtMessageConstrains);
 		txtMessage.setColumns(10);
+		txtMessage.requestFocusInWindow();												//Sets focus on the message input
 		
 		//Send - Button
 		JButton sendButton = new JButton("Send");
