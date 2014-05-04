@@ -2,6 +2,7 @@ import java.awt.EventQueue;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -15,6 +16,7 @@ public class ClientWindow extends JFrame {
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
 	private JTextArea textHistory;
+	private DefaultCaret caret;
 
 	/**
 	 * Constructor for ClientWindow
@@ -54,17 +56,18 @@ public class ClientWindow extends JFrame {
 		layout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panel.setLayout(layout);
 
-		//On Screen History - TextArea
+		//On Screen History - TextArea/JScrollPane
 		textHistory = new JTextArea();
 		textHistory.setFont(new Font("Arial", Font.PLAIN, 18));
 		textHistory.setEditable(false);
-		GridBagConstraints textHistoryConstrains = new GridBagConstraints();
-		textHistoryConstrains.gridwidth = 2;
-		textHistoryConstrains.insets = new Insets(0, 0, 5, 5);
-		textHistoryConstrains.fill = GridBagConstraints.BOTH;
-		textHistoryConstrains.gridx = 1;
-		textHistoryConstrains.gridy = 1;
-		panel.add(textHistory, textHistoryConstrains);
+		JScrollPane scroll = new JScrollPane(textHistory);
+		GridBagConstraints scrollConstrains = new GridBagConstraints();
+		scrollConstrains.insets = new Insets(0, 0, 5, 5);
+		scrollConstrains.fill = GridBagConstraints.BOTH;
+		scrollConstrains.gridx = 1;
+		scrollConstrains.gridy = 1;
+		scrollConstrains.gridwidth = 2;
+		panel.add(scroll, scrollConstrains);
 
 		//Message Field - TextField
 		txtMessage = new JTextField();
@@ -128,6 +131,7 @@ public class ClientWindow extends JFrame {
 	 */
 	public void printToScreen(String message){
 		textHistory.append(message + "\n");
+		textHistory.setCaretPosition(textHistory.getDocument().getLength());					//Sets the caret at the botton
 	}
 
 	/**
