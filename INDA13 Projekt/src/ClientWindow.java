@@ -44,9 +44,9 @@ public class ClientWindow extends JFrame {
 		this.ip = ip;
 		this.port = port;
 		
-		client = new Client(port);			//Create a Client Object
+		client = new Client(port);										//Create a Client Object
 		
-		boolean connect = client.openConnection(ip);				//Connect to server
+		boolean connect = client.openConnection(ip);					//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
@@ -75,6 +75,7 @@ public class ClientWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 800);
 		setResizable(true);	
+		setLocationRelativeTo(null);
 
 		//Layout -GridBagLayout
 		GridBagLayout layout = new GridBagLayout();
@@ -170,8 +171,9 @@ public class ClientWindow extends JFrame {
 	 */
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
-			printToScreen(name + ": " + message);
-			client.send(message.getBytes());
+			String text = name + ": " + message;
+			printToScreen(text);
+			client.send(text.getBytes());
 			txtMessage.setText("");
 		}
 	}

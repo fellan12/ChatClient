@@ -41,7 +41,7 @@ public class LoginWindow extends JFrame {
 
 		//Frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(300, 300, 355, 530);				//TODO set center though resolution
+		setLocationRelativeTo(null);
 		panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5,5,5,5));
 		setContentPane(panel);
@@ -94,20 +94,6 @@ public class LoginWindow extends JFrame {
 	}
 
 	/**
-	 * Login sequence
-	 * 
-	 * Logging in to the server.
-	 * 
-	 * @param name - the name of the user
-	 * @param ip - the Ip-address to the server
-	 * @param port - the port to the server.
-	 */
-	public void login(String name, String ip, int port){
-		dispose();
-		new ClientWindow(name, ip, port);
-	}
-
-	/**
 	 * Login Procedure
 	 * 
 	 * Checks that all the inputs are correct
@@ -127,6 +113,21 @@ public class LoginWindow extends JFrame {
 			//TODO felhantering: fixa en röd label som säger att inputen är fel
 		}
 	}
+
+	/**
+	 * Login sequence
+	 * 
+	 * Logging in to the server.
+	 * 
+	 * @param name - the name of the user
+	 * @param ip - the Ip-address to the server
+	 * @param port - the port to the server.
+	 */
+	public void login(String name, String ip, int port){
+		dispose();
+		new ClientWindow(name, ip, port);
+	}
+
 
 	/**
 	 * Launch the application.
