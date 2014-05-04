@@ -62,11 +62,12 @@ public class ClientWindow extends JFrame {
 		textHistory.setEditable(false);
 		JScrollPane scroll = new JScrollPane(textHistory);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
-		scrollConstrains.insets = new Insets(0, 0, 5, 5);
+		scrollConstrains.insets = new Insets(0, 12, 5, 5);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
-		scrollConstrains.gridx = 1;
-		scrollConstrains.gridy = 1;
-		scrollConstrains.gridwidth = 2;
+		scrollConstrains.gridx = 0;
+		scrollConstrains.gridy = 0;
+		scrollConstrains.gridwidth = 3;
+		scrollConstrains.gridheight = 2;
 		panel.add(scroll, scrollConstrains);
 
 		//Message Field - TextField
@@ -81,8 +82,9 @@ public class ClientWindow extends JFrame {
 		GridBagConstraints txtMessageConstrains = new GridBagConstraints();
 		txtMessageConstrains.fill = GridBagConstraints.HORIZONTAL;
 		txtMessageConstrains.insets = new Insets(0, 0, 0, 5);
-		txtMessageConstrains.gridx = 1;
+		txtMessageConstrains.gridx = 0;
 		txtMessageConstrains.gridy = 2;
+		txtMessageConstrains.gridwidth = 2;
 		panel.add(txtMessage, txtMessageConstrains);
 		txtMessage.setColumns(10);
 		txtMessage.requestFocusInWindow();												//Sets focus on the message input
