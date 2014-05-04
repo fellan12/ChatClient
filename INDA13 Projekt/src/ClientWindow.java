@@ -36,7 +36,7 @@ public class ClientWindow extends JFrame {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		boolean connect = openConnection(ip, port);
+		boolean connect = openConnection(ip, port);				//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
