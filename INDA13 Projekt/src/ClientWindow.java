@@ -6,6 +6,13 @@ import javax.swing.text.DefaultCaret;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class ClientWindow extends JFrame {
 
@@ -16,7 +23,10 @@ public class ClientWindow extends JFrame {
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
 	private JTextArea textHistory;
-	private DefaultCaret caret;
+
+	//TCP - components
+	private DatagramSocket socket;
+	private InetAddress inet_ip;
 
 	/**
 	 * Constructor for ClientWindow
@@ -25,8 +35,46 @@ public class ClientWindow extends JFrame {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		define();
-		printToScreen(name + " is connected on " + ip + ":" + port);
+		boolean connect = openConnection(ip, port);
+		if(!connect){
+			System.err.println("Connection failed!");
+		}else{
+			define();
+			printToScreen(name + " is connected on " + ip + ":" + port);
+		}
+	}
+
+	/**
+	 * Try to connect to the server
+	 * 
+	 * @param ip - Ip-address to the server
+	 * @param port - Port to the server
+	 * @return true/false - if the connection worked
+	 */
+	private boolean openConnection(String ip, int port){
+		try {
+			socket = new DatagramSocket(port);
+			inet_ip = InetAddress.getByName(ip);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	private String receive(){
+		byte[] data = new byte[1024];
+		DatagramPacket packet = new DatagramPacket(data, data.length);
+		
+		try {
+			socket.receive(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		String message = new String(packet.getData());
+		return message;
 	}
 
 	/**
