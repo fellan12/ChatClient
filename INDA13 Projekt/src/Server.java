@@ -32,7 +32,6 @@ public class Server implements Runnable {
 		running = true;
 		manageClients();
 		receive();
-		
 	}
 	
 	/**

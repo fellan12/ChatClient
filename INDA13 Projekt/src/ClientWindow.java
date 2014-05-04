@@ -24,6 +24,8 @@ public class ClientWindow extends JFrame {
 	private JTextField txtMessage;
 	private JTextArea textHistory;
 
+	private Client client;
+	
 	//UDP - components
 	private DatagramSocket socket;
 	private InetAddress inet_ip;
@@ -36,70 +38,16 @@ public class ClientWindow extends JFrame {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		boolean connect = openConnection(ip, port);				//Connect to server
+		
+		client = new Client(port);			//Create a Client Object
+		
+		boolean connect = client.openConnection(ip, port);				//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
 			define();
 			printToScreen(name + " is connected on " + ip + ":" + port);
 		}
-	}
-
-	/**
-	 * Try to connect to the server
-	 * 
-	 * @param ip - Ip-address to the server
-	 * @param port - Port to the server
-	 * @return true/false - if the connection worked
-	 */
-	private boolean openConnection(String ip, int port){
-		try {
-			socket = new DatagramSocket(port);
-			inet_ip = InetAddress.getByName(ip);
-		} catch (SocketException e) {
-			e.printStackTrace();
-			return false;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * receives messeges from the server.
-	 * 
-	 * @return message - the recevied message.
-	 */
-	private String receive(){
-		byte[] data = new byte[1024];
-		DatagramPacket packet = new DatagramPacket(data, data.length);			//Receiving packet
-		
-		try {
-			socket.receive(packet);								//Acts like a while-loop
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		String message = new String(packet.getData());
-		return message;
-	}
-	
-	/**
-	 * Send messages to the server.
-	 */
-	private void send(final byte[] data){					//final because of anonymous class.
-		sendThread = new Thread("Send Thread"){
-			public void run(){
-				DatagramPacket packet = new DatagramPacket(data, data.length, inet_ip, port);			//Sending packet
-				try {
-					socket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		sendThread.start();
 	}
 
 	/**
