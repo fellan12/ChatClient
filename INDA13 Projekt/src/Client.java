@@ -2,14 +2,18 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-
+/**
+ * Client class that handles the logics for the ClinetWindow
+ * 
+ * @author Felix De Silva
+ */
 public class Client {
 	private DatagramSocket socket;
 	private InetAddress inet_ip;
+	
 	private Thread sendThread;
 	private int port;
 	
@@ -24,9 +28,9 @@ public class Client {
 	 * @param port - Port to the server
 	 * @return true/false - if the connection worked
 	 */
-	public boolean openConnection(String ip, int port){
+	public boolean openConnection(String ip){
 		try {
-			socket = new DatagramSocket(port);
+			socket = new DatagramSocket();
 			inet_ip = InetAddress.getByName(ip);
 		} catch (SocketException e) {
 			e.printStackTrace();
@@ -48,7 +52,7 @@ public class Client {
 		DatagramPacket packet = new DatagramPacket(data, data.length);			//Receiving packet
 
 		try {
-			socket.receive(packet);								//Acts like a while-loop
+			socket.receive(packet);							//Acts like a while-loop
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +64,7 @@ public class Client {
 	/**
 	 * Send messages to the server.
 	 */
-	private void send(final byte[] data){					//final because of anonymous class.
+	public void send(final byte[] data){					//final because of anonymous class.
 		sendThread = new Thread("Send Thread"){
 			public void run(){
 				DatagramPacket packet = new DatagramPacket(data, data.length, inet_ip, port);			//Sending packet

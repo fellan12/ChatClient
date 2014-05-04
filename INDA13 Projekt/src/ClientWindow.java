@@ -14,11 +14,16 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+/**
+ * ClientWindow class that handles the Screen
+ * that all the messages print
+ * 
+ * @author Felix De Silva
+ */
 public class ClientWindow extends JFrame {
 
 	private JPanel panel;
-	private String name;
-	private String ip;
+	private String name, ip;
 	private int port;
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
@@ -41,12 +46,14 @@ public class ClientWindow extends JFrame {
 		
 		client = new Client(port);			//Create a Client Object
 		
-		boolean connect = client.openConnection(ip, port);				//Connect to server
+		boolean connect = client.openConnection(ip);				//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
 			define();
 			printToScreen(name + " is connected on " + ip + ":" + port);
+			String connecting = name + " has connected from " + ip + ":" + port; 
+			client.send(connecting.getBytes());
 		}
 	}
 
@@ -164,6 +171,7 @@ public class ClientWindow extends JFrame {
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			printToScreen(name + ": " + message);
+			client.send(message.getBytes());
 			txtMessage.setText("");
 		}
 	}
