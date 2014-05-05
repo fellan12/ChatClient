@@ -37,8 +37,14 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private InetAddress inet_ip;
 
 	private Thread sendThread;
+	
 	/**
-	 * Constructor for ClientWindow
+	 * Constructor 1 for ClientWindow
+	 */
+	public ClientWindow(){}
+	
+	/**
+	 * Constructor 2 for ClientWindow
 	 */
 	public ClientWindow(String name, String ip, int port) {
 		this.name = name;
@@ -190,6 +196,14 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			}
 			txtMessage.setText("");
 		}
+	}
+	
+	/**
+	 * Recieve a message from server
+	 * @param output
+	 */
+	public void receive(String output){
+		printToScreen(output);
 	}
 }
 

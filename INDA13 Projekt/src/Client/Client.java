@@ -13,13 +13,15 @@ import java.net.Socket;
 public class Client {
 	private Socket socket;
 	private InetAddress inet_ip;
-	
+
 	private ObjectOutputStream outputStream;
 	private ObjectInputStream inputStream;	
-	
+
 	private Thread sendThread, recieveThread;
 	private int port;
 	
+	private boolean running = false;
+
 	public Client(int port){
 		this.port = port;
 	}
@@ -32,14 +34,14 @@ public class Client {
 	 * @return true/false - if the connection worked
 	 */
 	public boolean openConnection(String ip){
-			try {
-				inet_ip = InetAddress.getByName(ip);
-				socket = new Socket(inet_ip, port);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-		
+		try {
+			inet_ip = InetAddress.getByName(ip);
+			socket = new Socket(inet_ip, port);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		running = true;
 		return true;
 	}
 
@@ -51,14 +53,17 @@ public class Client {
 	 */
 	public void receive() throws IOException{
 		inputStream = new ObjectInputStream(socket.getInputStream());
+		final ClientWindow window = new ClientWindow(); 
 		recieveThread = new Thread("Receive Thread"){
 			public void run(){
-				try {
-					System.out.println(inputStream.readObject());
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
+				while(running){
+					try {
+						window.receive((String)inputStream.readObject());
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		};	
