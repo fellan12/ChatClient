@@ -25,6 +25,7 @@ public class LoginWindow extends JFrame {
 	 */
 	public LoginWindow() {
 		define();
+		// Hej
 	}
 
 	/**
