@@ -50,7 +50,6 @@ public class Client {
 	private String receive(){
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);			//Receiving packet
-
 		try {
 			socket.receive(packet);							//Acts like a while-loop
 		} catch (IOException e) {

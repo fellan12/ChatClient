@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.Frame;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -24,6 +25,7 @@ public class LoginWindow extends JFrame {
 	 * Constructor for LoginWindow
 	 */
 	public LoginWindow() {
+		//TJENA
 		define();
 	}
 
@@ -41,11 +43,11 @@ public class LoginWindow extends JFrame {
 
 		//Frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setBounds(750, 300, getWidth(), getHeight());
 		panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5,5,5,5));
-		setContentPane(panel);
 		panel.setLayout(null);
+		setContentPane(panel);
 		setResizable(false);
 		setTitle("Login");
 		setSize(366, 531);
@@ -58,14 +60,14 @@ public class LoginWindow extends JFrame {
 
 		//Screen Name  - TextField
 		textName = new JTextField();
-		textName.setColumns(10);
 		textName.setBounds(90, 70, 180, 32);
+		textName.setColumns(10);
 		panel.add(textName);
 
 		//Port - TextField
 		textPort = new JTextField();
-		textPort.setColumns(10);
 		textPort.setBounds(90, 220, 180, 32);
+		textPort.setColumns(10);
 		panel.add(textPort);
 
 		//Name - Label
@@ -85,12 +87,12 @@ public class LoginWindow extends JFrame {
 
 		//Login - Button
 		JButton btnNewButton = new JButton("Login");
+		btnNewButton.setBounds(130, 347, 100, 30);
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
 				LoginProcedure();
 			}
 		});
-		btnNewButton.setBounds(130, 347, 100, 30);
 		panel.add(btnNewButton);
 	}
 
