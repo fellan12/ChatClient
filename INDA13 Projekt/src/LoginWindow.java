@@ -27,6 +27,7 @@ public class LoginWindow extends JFrame {
 	public LoginWindow() {
 		//TJENA
 		define();
+		// Hej
 	}
 
 	/**
