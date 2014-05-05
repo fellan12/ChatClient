@@ -86,7 +86,7 @@ public class Client {
 	 * Send messages to he server.
 	 * @throws IOException 
 	 */
-	public void send(final String message) throws IOException{					//final because of anonymous class.
+	public void send(final String message){
 		sendThread = new Thread("Send Thread"){
 			public void run(){
 				outputStream.println(message);
