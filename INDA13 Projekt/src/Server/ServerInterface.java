@@ -1,3 +1,4 @@
+package Server;
 /**
  * Interface for a Server
  * 

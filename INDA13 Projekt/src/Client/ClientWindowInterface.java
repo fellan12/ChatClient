@@ -1,3 +1,4 @@
+package Client;
 /**
  * Interface for a Client to a chat service
  * 
