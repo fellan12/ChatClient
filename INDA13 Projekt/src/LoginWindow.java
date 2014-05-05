@@ -48,38 +48,39 @@ public class LoginWindow extends JFrame {
 		panel.setLayout(null);
 		setResizable(false);
 		setTitle("Login");
+		setSize(366, 531);
 
 		//IP-Address  - TextField
 		textIp = new JTextField();
-		textIp.setBounds(84, 145, 180, 32);
+		textIp.setBounds(90, 145, 180, 32);
 		panel.add(textIp);
 		textIp.setColumns(10);
 
 		//Screen Name  - TextField
 		textName = new JTextField();
 		textName.setColumns(10);
-		textName.setBounds(84, 70, 180, 32);
+		textName.setBounds(90, 70, 180, 32);
 		panel.add(textName);
 
 		//Port - TextField
 		textPort = new JTextField();
 		textPort.setColumns(10);
-		textPort.setBounds(84, 220, 180, 32);
+		textPort.setBounds(90, 220, 180, 32);
 		panel.add(textPort);
 
 		//Name - Label
 		JLabel lblName = new JLabel("Name:");
-		lblName.setBounds(155, 50, 38, 16);
+		lblName.setBounds(161, 50, 38, 16);
 		panel.add(lblName);
 
 		//IP-Adress - Label
 		JLabel lblIpadress = new JLabel("IP-Adress:");
-		lblIpadress.setBounds(144, 125, 61, 16);
+		lblIpadress.setBounds(150, 125, 61, 16);
 		panel.add(lblIpadress);
 
 		//Port - Label
 		JLabel lblPort = new JLabel("Port:");
-		lblPort.setBounds(155, 200, 38, 16);
+		lblPort.setBounds(166, 200, 28, 16);
 		panel.add(lblPort);
 
 		//Login - Button
@@ -89,7 +90,7 @@ public class LoginWindow extends JFrame {
 				LoginProcedure();
 			}
 		});
-		btnNewButton.setBounds(124, 347, 100, 30);
+		btnNewButton.setBounds(130, 347, 100, 30);
 		panel.add(btnNewButton);
 	}
 
