@@ -167,21 +167,26 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	}
 
 	/**
-	 * Send message
-	 * 
-	 * Prints the message to the screen and
-	 * send it to the server
+	 * send to the server
 	 * 
 	 * @param message
 	 */
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
-			printToScreen(text);
 			client.send(text.getBytes());
 			txtMessage.setText("");
 		}
 	}
+	
+	/**
+	 * Recieve message from the server
+	 * and prints it to the screen
+	 */
+	public void recieveMessage() {
+		
+	}
+	
 }
 
 //TODO Smilesar
