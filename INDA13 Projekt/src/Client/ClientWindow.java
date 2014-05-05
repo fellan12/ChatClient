@@ -61,7 +61,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			printToScreen(name + " is connected on " + ip + ":" + port);
 			String connecting = name + " has connected from " + ip + ":" + port; 
 			try {
-				client.send(connecting.getBytes());
+				client.send(connecting);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -176,7 +176,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * 
 	 * @param message
 	 */
-	public void printToScreen(String message){
+	private void printToScreen(String message){
 		textHistory.append(message + "\n");
 		textHistory.setCaretPosition(textHistory.getDocument().getLength());					//Sets the caret at the botton
 	}
@@ -190,7 +190,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
 			try {
-				client.send(text.getBytes());
+				client.send(text);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

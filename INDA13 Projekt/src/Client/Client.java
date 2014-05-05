@@ -2,8 +2,10 @@ package Client;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  * Client class that handles the logics for the ClinetWindow
@@ -14,16 +16,30 @@ public class Client {
 	private Socket socket;
 	private InetAddress inet_ip;
 
-	private ObjectOutputStream outputStream;
-	private ObjectInputStream inputStream;	
+	private PrintWriter outputStream;
+	private Scanner inputStream;
 
 	private Thread sendThread, recieveThread;
 	private int port;
 	
-	private boolean running = false;
-
 	public Client(int port){
 		this.port = port;
+		
+		try {
+			outputStream = new PrintWriter(socket.getOutputStream());
+			inputStream = new Scanner(socket.getInputStream());
+			outputStream.flush();
+			receive();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -41,7 +57,6 @@ public class Client {
 			e.printStackTrace();
 			return false;
 		}
-		running = true;
 		return true;
 	}
 
@@ -52,17 +67,14 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void receive() throws IOException{
-		inputStream = new ObjectInputStream(socket.getInputStream());
 		final ClientWindow window = new ClientWindow(); 
 		recieveThread = new Thread("Receive Thread"){
 			public void run(){
-				while(running){
-					try {
-						window.receive((String)inputStream.readObject());
-					} catch (IOException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+				while(inputStream.hasNext()){
+					String message = inputStream.nextLine();
+					
+					if(!message.equals("")){
+						window.receive(message);
 					}
 				}
 			}
@@ -74,10 +86,11 @@ public class Client {
 	 * Send messages to he server.
 	 * @throws IOException 
 	 */
-	public void send(final byte[] data) throws IOException{					//final because of anonymous class.
+	public void send(final String message) throws IOException{					//final because of anonymous class.
 		sendThread = new Thread("Send Thread"){
 			public void run(){
-				//DO STUFF
+				outputStream.println(message);
+				outputStream.flush();
 			}
 		};
 		sendThread.start();

@@ -5,6 +5,7 @@ import java.awt.Frame;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -88,7 +89,11 @@ public class LoginWindow extends JFrame {
 		btnNewButton.setBounds(130, 347, 100, 30);
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				LoginProcedure();
+				if(LoginProcedure()){
+					login();
+				}else{
+					JOptionPane.showMessageDialog(null, "Invalid Input");
+				}
 			}
 		});
 		panel.add(btnNewButton);
@@ -99,24 +104,16 @@ public class LoginWindow extends JFrame {
 	 * 
 	 * Checks that all the inputs are correct
 	 */
-	public void LoginProcedure(){
+	public boolean LoginProcedure(){
 		if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
-			String name = textName.getText();
-			String ip = textIp.getText();
-			int port = Integer.parseInt(textPort.getText());
-			login(name, ip, port);
-			System.out.println("Logged in");
+			return true;
 		}else{
-			System.out.println("Error");
-			System.out.println("Name: " + textName.getText());
-			System.out.println("IP: " + textIp.getText());
-			System.out.println("Port: " + textPort.getText());
-			//TODO felhantering: fixa en röd label som säger att inputen är fel
+			return false;
 		}
 	}
 
 	/**
-	 * Login sequence
+	 * Log in sequence
 	 * 
 	 * Logging in to the server.
 	 * 
@@ -124,9 +121,13 @@ public class LoginWindow extends JFrame {
 	 * @param ip - the Ip-address to the server
 	 * @param port - the port to the server.
 	 */
-	public void login(String name, String ip, int port){
+	public void login(){
 		dispose();
+		String name = textName.getText();
+		String ip = textIp.getText();
+		int port = Integer.parseInt(textPort.getText());
 		new ClientWindow(name, ip, port);
+		System.out.println("Logged in");
 	}
 
 

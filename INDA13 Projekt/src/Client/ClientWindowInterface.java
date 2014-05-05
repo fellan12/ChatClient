@@ -13,13 +13,6 @@ public interface ClientWindowInterface {
 	public void define();
 
 	/**
-	 * Print the message to the screen
-	 * 
-	 * @param message
-	 */
-	public void printToScreen(String message);
-
-	/**
 	 * Send message
 	 * 
 	 * Prints the message to the screen and
