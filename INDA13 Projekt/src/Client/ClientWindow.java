@@ -54,7 +54,16 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			define();
 			printToScreen(name + " is connected on " + ip + ":" + port);
 			String connecting = name + " has connected from " + ip + ":" + port; 
-			client.send(connecting.getBytes());
+			try {
+				client.send(connecting.getBytes());
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				client.receive();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -174,22 +183,16 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
-			client.send(text.getBytes());
+			try {
+				client.send(text.getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			txtMessage.setText("");
 		}
 	}
-	
-	/**
-	 * Recieve message from the server
-	 * and prints it to the screen
-	 */
-	public void recieveMessage() {
-		
-	}
-	
 }
 
 //TODO Smilesar
-//TODO Scrollbar
 //TODO Logged in activity
 

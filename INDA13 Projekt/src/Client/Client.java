@@ -1,10 +1,9 @@
 package Client;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.Socket;
 
 /**
  * Client class that handles the logics for the ClinetWindow
@@ -12,10 +11,13 @@ import java.net.UnknownHostException;
  * @author Felix De Silva
  */
 public class Client {
-	private DatagramSocket socket;
+	private Socket socket;
 	private InetAddress inet_ip;
 	
-	private Thread sendThread;
+	private ObjectOutputStream outputStream;
+	private ObjectInputStream inputStream;	
+	
+	private Thread sendThread, recieveThread;
 	private int port;
 	
 	public Client(int port){
@@ -30,16 +32,14 @@ public class Client {
 	 * @return true/false - if the connection worked
 	 */
 	public boolean openConnection(String ip){
-		try {
-			socket = new DatagramSocket();
-			inet_ip = InetAddress.getByName(ip);
-		} catch (SocketException e) {
-			e.printStackTrace();
-			return false;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			return false;
-		}
+			try {
+				inet_ip = InetAddress.getByName(ip);
+				socket = new Socket(inet_ip, port);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		
 		return true;
 	}
 
@@ -47,32 +47,32 @@ public class Client {
 	 * receives messeges from the server.
 	 * 
 	 * @return message - the recevied message.
+	 * @throws IOException 
 	 */
-	private String receive(){
-		byte[] data = new byte[1024];
-		DatagramPacket packet = new DatagramPacket(data, data.length);			//Receiving packet
-		try {
-			socket.receive(packet);							//Acts like a while-loop
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		String message = new String(packet.getData());
-		return message;
+	public void receive() throws IOException{
+		inputStream = new ObjectInputStream(socket.getInputStream());
+		recieveThread = new Thread("Receive Thread"){
+			public void run(){
+				try {
+					System.out.println(inputStream.readObject());
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+			}
+		};	
+		recieveThread.start();
 	}
 
 	/**
-	 * Send messages to the server.
+	 * Send messages to he server.
+	 * @throws IOException 
 	 */
-	public void send(final byte[] data){					//final because of anonymous class.
+	public void send(final byte[] data) throws IOException{					//final because of anonymous class.
 		sendThread = new Thread("Send Thread"){
 			public void run(){
-				DatagramPacket packet = new DatagramPacket(data, data.length, inet_ip, port);			//Sending packet
-				try {
-					socket.send(packet);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				//DO STUFF
 			}
 		};
 		sendThread.start();

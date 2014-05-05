@@ -29,10 +29,4 @@ public interface ClientWindowInterface {
 	 */
 	public void sendMessage(String message);
 	
-	/**
-	 * Recieve message from the server
-	 * and prints it to the screen
-	 */
-	public void recieveMessage();
-	
 }
