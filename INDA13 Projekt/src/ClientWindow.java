@@ -20,7 +20,7 @@ import java.net.UnknownHostException;
  * 
  * @author Felix De Silva
  */
-public class ClientWindow extends JFrame {
+public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 	private JPanel panel;
 	private String name, ip;
@@ -62,7 +62,7 @@ public class ClientWindow extends JFrame {
 	 * 
 	 * All its content is defines and creates here
 	 */
-	private void define(){
+	public void define(){
 		//Panel
 		panel = new JPanel();
 		panel.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -156,7 +156,7 @@ public class ClientWindow extends JFrame {
 	}
 
 	/**
-	 * Print the message to the text history
+	 * Print the message to the screen
 	 * 
 	 * @param message
 	 */
@@ -167,6 +167,10 @@ public class ClientWindow extends JFrame {
 
 	/**
 	 * Send message
+	 * 
+	 * Prints the message to the screen and
+	 * send it to the server
+	 * 
 	 * @param message
 	 */
 	public void sendMessage(String message){

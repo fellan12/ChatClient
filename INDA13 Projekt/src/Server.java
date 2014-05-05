@@ -4,7 +4,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 
-public class Server implements Runnable {
+public class Server implements Runnable, ServerInterface {
 
 	private int port;
 
@@ -39,7 +39,7 @@ public class Server implements Runnable {
 	/**
 	 * Manage the clients, checks that them are there
 	 */
-	private void manageClients(){
+	public void manageClients(){
 		manage = new Thread("Manage"){
 			public void run(){
 				while(running){
@@ -53,7 +53,7 @@ public class Server implements Runnable {
 	/**
 	 * Receives messages from clients
 	 */
-	private void receive(){
+	public void receive(){
 		recieve = new Thread("Receive Thread"){
 			public void run(){
 				while(running){
