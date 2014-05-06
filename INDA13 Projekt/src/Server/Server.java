@@ -61,6 +61,8 @@ public class Server {
 	 * @param port A given port.
 	 */
 	public Server(int port) {
+		clients = new ArrayList<Socket>();
+		
 		try {
 			servSock = new ServerSocket(port);
 		} catch (IOException e) {
