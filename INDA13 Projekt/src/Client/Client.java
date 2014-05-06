@@ -1,7 +1,9 @@
 package Client;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -16,19 +18,15 @@ public class Client {
 	private Socket socket;
 	private InetAddress inet_ip;
 
-	private PrintWriter outputStream;
-	private Scanner inputStream;
-
 	private Thread sendThread, recieveThread;
 	private int port;
 	
+	private boolean running;
+
 	public Client(int port){
 		this.port = port;
-		
+
 		try {
-			outputStream = new PrintWriter(socket.getOutputStream());
-			inputStream = new Scanner(socket.getInputStream());
-			outputStream.flush();
 			receive();
 
 		} catch (IOException e) {
@@ -53,6 +51,7 @@ public class Client {
 		try {
 			inet_ip = InetAddress.getByName(ip);
 			socket = new Socket(inet_ip, port);
+			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -69,14 +68,23 @@ public class Client {
 	public void receive() throws IOException{
 		final ClientWindow window = new ClientWindow(); 
 		recieveThread = new Thread("Receive Thread"){
+
 			public void run(){
-				while(inputStream.hasNext()){
-					String message = inputStream.nextLine();
-					
-					if(!message.equals("")){
-						window.receive(message);
+				try {
+					ObjectInputStream inFromServer = null;
+					while(running){
+						inFromServer = new ObjectInputStream(socket.getInputStream());
+						String message = (String) inFromServer.readObject();			//Put message from stream to string
+
+						if(!message.equals("")){
+							window.receive(message);									//Send message to ClientWindow
+						}
 					}
+					inFromServer.close();											//Close input Stream
+				} catch (IOException | ClassNotFoundException e) {
+					e.printStackTrace();
 				}
+				
 			}
 		};	
 		recieveThread.start();
@@ -89,8 +97,14 @@ public class Client {
 	public void send(final String message){
 		sendThread = new Thread("Send Thread"){
 			public void run(){
-				outputStream.println(message);
-				outputStream.flush();
+				try {
+					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
+					outToServer.writeObject(message);
+					outToServer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
 			}
 		};
 		sendThread.start();
