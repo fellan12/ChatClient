@@ -21,6 +21,7 @@ import java.util.ArrayList;
  */
 public class Server {
 
+	private ServerSocket servSock;
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
@@ -42,9 +43,6 @@ public class Server {
 		// TODO: Start GUI. Get port from user.
 		
 		// TODO: Error handling. Try/catch. Handle exceptions?
-
-		// Create a server socket that listens for connection requests on the port specified by the user.
-		ServerSocket servSock = new ServerSocket(123);    
 
 		while (true) {
 			if (!serverFull) {
@@ -81,7 +79,13 @@ public class Server {
 	 * @param port 
 	 */
 	public Server(int port) {
-		
+		// Create a server socket that listens for connection requests on the port specified by the user.
+		try {
+			servSock = new ServerSocket(port);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
 	}
 	
 	/**
