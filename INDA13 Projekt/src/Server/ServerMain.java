@@ -3,11 +3,11 @@ package Server;
 public class ServerMain {
 	
 	private int port;
-	private Server server;
+	private Server2 server;
 	
 	public ServerMain(int port){
 		this.port = port;
-		server = new Server(port);
+		server = new Server2(port);
 	}
 	
 	public static void main(String[] args){
