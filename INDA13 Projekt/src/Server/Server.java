@@ -37,16 +37,15 @@ public class Server {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		int port = 1234;		// TODO: Start GUI. Get port from user. 
+		int port = 1234; // TODO: Start GUI. Get port from user. 
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
 		
 		while (true) {
-			Socket sock = server.acceptRequest();
-			// TODO: Add user.
-			System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
-			server.communicate(sock);
+			Socket sock = server.acceptRequest(); // The socket from which to read client input.
+			if (sock != null) // Client is connected to server.
+				server.communicate(sock); // Communicate with clients.
 		}
 		// TODO: Close the ServerSocket. Where?
 	}
@@ -77,33 +76,79 @@ public class Server {
 	 * 
 	 * If the client is allowed to connect to the chat, the client is added to
 	 * the clients list and the entered user name is added to the users list.
-	 * "True" is sent on the socket. If the client is not allowed to connect,
-	 * "false" is sent on the socket. 
-	 * 
-	 * @return The server over which to communicate.
+	 * The connection status is sent on the socket, which tells the client 
+	 * whether its connect request was successful.
+	 *  
+	 * @return The socket over which to communicate, or null if client is not allowed connect.
 	 */
 	private Socket acceptRequest() {
-		// TODO: Accept request and make sure user is notified. Send "true" to client.
-		Socket sock = null; // The server over which to communicate.
+		Socket sock = null; // The socket over which to communicate.
 		
 		try {
 			sock = servSock.accept(); 
-
-			if (!serverFull) {
-				// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
+			
+			if (!serverFull && !nameInUse(sock)) {
 				clients.add(sock); // Add the connection socket to clients.
 
 				// If the server limit has been reached, the server is full. 
 				if (users.size() == LIMIT)
-					serverFull = true;	
+					serverFull = true;
+				sendConnectionStatus(true, sock);
 			} else {
-				// TODO: Do not accept request. Make sure the "requester" is notified somehow. Send "false" to client. 
+				// Client is not connected to server.
+				sock = null;
+				sendConnectionStatus(false, sock);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return sock;
+	}
+	
+	/**
+	 * Checks that a user with the screen name received from the given socket 
+	 * isn't already connected to the server, that it isn't already in the
+	 * users list. If the name is not in use add the name to the users list
+	 * and return true.
+	 * 
+	 * @param sock A given socket from which to receive a screen name.
+	 * @return True if the name from socket is already in use, false otherwise.
+	 */
+	private boolean nameInUse(Socket sock) {
+		ObjectInputStream input;
+		boolean nameInUse = false; // Name already in use.
+		
+		try {
+			input = new ObjectInputStream(sock.getInputStream());
+			String name = (String) input.readObject();
+			if (users.contains(name)) {
+				nameInUse = true;
+			} else {
+				nameInUse = false;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nameInUse;
+	}
+
+	/**
+	 * Send the given boolean value to the given socket, in order to tell the client
+	 * whether it has been connected to the server.
+	 * 
+	 * @param connected true if client on sock has been connected to the server, false otherwise.
+	 * @param sock The socket from which a connection request was received.
+	 */
+	private void sendConnectionStatus(boolean connected, Socket sock) {
+		try {
+			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
+			output.writeObject(connected);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -125,31 +170,15 @@ public class Server {
 	}
 	
 	/**
-	 * Gets the screen name of the (user of the) client connected to the given socket,
-	 * and adds it to the users list.
-	 * 
-	 * @param sock A given socket (server-client connection).
-	 */
-	private void addUser(Socket sock) {
-		/* TODO:
-		 * Get the name from the client. HOW? Depends on the client input!
-		 * Add the name to users if it does not already exist.
-		 * Echo the users to all clients. (send the users list to the clients). (updateUsers()).
-		 */
-	}
-	
-	/**
 	 * Echoes the users list to all clients connected to the server.
 	 * The method should be executed whenever users are connected
 	 * or disconnected to the server; whenever users are added or 
 	 * removed from the users list. This is to insure that all 
 	 * clients know which users are connected to the chat room.
+	 * 
+	 * TODO: Does this work? Make a call to it somewhere!
 	 */
 	private void updateUsers() {
-		/* TODO
-		 * echo users list
-		 * update boolean
-		 */
 		for (Socket client : clients) {
 			// Send the users list on client
 			try {
@@ -206,13 +235,13 @@ public class Server {
 					String message = (String) input.readObject(); // The message read from socket.
 					echoMessage(message); // Echoes the message to all clients connected to the server.
 					input.close();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
+					System.err.println("Fail - RunException");
+					System.exit(1);
+					break;
+				}
 			}
 		}
 		
