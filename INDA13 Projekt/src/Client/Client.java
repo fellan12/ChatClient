@@ -38,9 +38,8 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			inet_ip = InetAddress.getByName(ip);
-			socket = new Socket(inet_ip, port);
-			System.out.println(socket.isConnected());
+			inet_ip = InetAddress.getByName(ip);							//Make String ip to Inet-address ip
+			socket = new Socket(inet_ip, port);								//Make a socket connection to ip and port
 			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -49,27 +48,39 @@ public class Client {
 		return true;
 	}
 	
+	/**
+	 * Checks if the socked is connected to the server
+	 * 
+	 * @return socket.isConnected() - true/false if there is a connection
+	 */
 	public boolean isConnectionOpen(){
 		return socket.isConnected();
 	}
 	
-	public boolean verifyNameAndSpace(String name){
+	/**
+	 * Send the name to the server and recieves a true/false message
+	 * if you are allowed to connect.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public boolean verifyConnection(String userName){
 		
-		send(name);				//Send name to verify
+		send(userName);															//Send name to server for verify
 		
 		ObjectInputStream inFromServer = null;
 		String verifyMessage = null;
 		boolean verify = false;
 		try {
 			inFromServer = new ObjectInputStream(socket.getInputStream());	//Wait for response
-			verifyMessage = (String) inFromServer.readObject();			//Put message from stream to string
+			verifyMessage = (String) inFromServer.readObject();				//Put message from stream to string
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(verifyMessage.equals("true")){
+		if(verifyMessage.equals("true")){									//if the message was true then the name is taken
 			verify = false;
-		}else if(verifyMessage.equals("false")){
+		}else if(verifyMessage.equals("false")){							//if the message was false then the name is not taken
 			verify = true;
 		}
 		return verify;
@@ -83,14 +94,12 @@ public class Client {
 	 */
 	public void receive() {
 		final ClientWindow window = new ClientWindow(); 
-		recieveThread = new Thread("Receive-Thread"){
+		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {
 					ObjectInputStream inFromServer = null;
 					while(running){
-						System.out.println(socket.isConnected());
-						System.out.println(socket.getPort());
-						inFromServer = new ObjectInputStream(socket.getInputStream());
+						inFromServer = new ObjectInputStream(socket.getInputStream());	//make a inputStream
 						String message = (String) inFromServer.readObject();			//Put message from stream to string
 
 						if(!message.equals("")){
@@ -104,7 +113,7 @@ public class Client {
 				
 			}
 		};	
-		recieveThread.start();
+		recieveThread.start();														//Start the thread
 	}
 
 	/**
@@ -112,20 +121,19 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send-Thread"){
+		sendThread = new Thread("Send-Thread"){										//Thread
 			public void run(){
 				try {
-					System.out.println(socket.isConnected());
-					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
-					outToServer.writeObject(message);
-					outToServer.close();
-				} catch (IOException e) {
+					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Make a OutputStream
+					outToServer.writeObject(message);								//send message through the stream
+					outToServer.close();											//Close the stream
+				} catch (IOException e) {		
 					e.printStackTrace();
 				}
 				
 			}
 		};
-		sendThread.start();
+		sendThread.start();															//Start the thread
 	}
 
 }
