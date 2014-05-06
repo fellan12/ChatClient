@@ -46,6 +46,7 @@ public class Server {
 		while (true) {
 			if (!serverFull) {
 				Socket sock = server.acceptRequest();
+				// TODO: Add user.
 				System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
 				server.communicate(sock);
 			} else {
@@ -121,8 +122,8 @@ public class Server {
 	private void addUser(Socket sock) {
 		/* TODO:
 		 * Get the name from the client. HOW? Depends on the client input!
-		 * Add the name to users.
-		 * Echo the users to all clients. (send the users list to the clients).
+		 * Add the name to users if it does not already exist.
+		 * Echo the users to all clients. (send the users list to the clients). (updateUsers()).
 		 */
 	}
 	
@@ -138,6 +139,17 @@ public class Server {
 		 * echo users list
 		 * update boolean
 		 */
+		for (Socket client : clients) {
+			// Send the users list on client
+			try {
+				ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+				output.writeObject(users);
+				output.close();					
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -150,7 +162,7 @@ public class Server {
 	 * @author Richard Sjöberg
 	 * @version 2014-05-06
 	 */
-	public class ChatService implements Runnable {
+	private class ChatService implements Runnable {
 		
 		Socket sock; // The socket from which to read input.
 		
