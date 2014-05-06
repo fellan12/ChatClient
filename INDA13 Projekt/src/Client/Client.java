@@ -48,6 +48,10 @@ public class Client {
 		}
 		return true;
 	}
+	
+	public boolean isConnectionOpen(){
+		return socket.isConnected();
+	}
 
 	/**
 	 * receives messeges from the server.
@@ -57,8 +61,7 @@ public class Client {
 	 */
 	public void receive() {
 		final ClientWindow window = new ClientWindow(); 
-		recieveThread = new Thread("Receive Thread"){
-
+		recieveThread = new Thread("Receive-Thread"){
 			public void run(){
 				try {
 					ObjectInputStream inFromServer = null;
@@ -87,7 +90,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send Thread"){
+		sendThread = new Thread("Send-Thread"){
 			public void run(){
 				try {
 					System.out.println(socket.isConnected());
