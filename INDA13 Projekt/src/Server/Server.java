@@ -58,7 +58,7 @@ public class Server {
 	 */
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
-		users = new ArrayList<>();
+		users = new ArrayList<String>();
 		
 		try {
 			servSock = new ServerSocket(port);
@@ -69,42 +69,41 @@ public class Server {
 	}
 	
 	/**
-	 * Listens for and accepts any incoming connection request on
-	 * servSock. Returns the Socket over which to communicate.
+	 * Listens for and accepts any incoming connection request on servSock. 
+	 * The client is allowed to connect to the chat if the server is not 
+	 * full, and does not contain any user with the requested screen name
+	 * (screen name is sent on the socket). Returns the Socket over which 
+	 * to communicate.
 	 * 
-	 * TODO: Checks that the user is not already connected to the server.
-	 * Checks that there is no user with the username send with the request.
-	 * Takes a string from the client. The string is the requested screen name 
-	 * of the user that is trying to connect. 
+	 * If the client is allowed to connect to the chat, the client is added to
+	 * the clients list and the entered user name is added to the users list.
+	 * "True" is sent on the socket. If the client is not allowed to connect,
+	 * "false" is sent on the socket. 
 	 * 
 	 * @return The server over which to communicate.
 	 */
 	private Socket acceptRequest() {
-
+		// TODO: Accept request and make sure user is notified. Send "true" to client.
+		Socket sock = null; // The server over which to communicate.
 		
-		if (!serverFull) {
-			// TODO: Accept request and make sure user is notified. Send "true" to client.
-			Socket sock; // The server over which to communicate.
-			try {
-				sock = servSock.accept();
-				System.out.println("socket in server isconneced? : " + sock.isConnected());
-				System.out.println("socket in server isClosed? : " + sock.isClosed());
+		try {
+			sock = servSock.accept(); 
+
+			if (!serverFull) {
 				// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
 				clients.add(sock); // Add the connection socket to clients.
 
 				// If the server limit has been reached, the server is full. 
 				if (users.size() == LIMIT)
 					serverFull = true;	
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
+			} else {
+				// TODO: Do not accept request. Make sure the "requester" is notified somehow. Send "false" to client. 
 			}
-			return sock;
-		} else {
-			// TODO: Do not accept request. Make sure the "requester" is notified somehow. Send "false" to client. 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
+		return sock;
 	}
 	
 	/**
