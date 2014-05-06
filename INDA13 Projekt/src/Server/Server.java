@@ -124,7 +124,7 @@ public class Server {
 	 * @author Richard Sjöberg
 	 * @version 2014-05-05
 	 */
-	public class ChatService implements Runnable {
+	private class ChatService implements Runnable {
 		
 		Socket sock; // The socket from which to read input.
 		
