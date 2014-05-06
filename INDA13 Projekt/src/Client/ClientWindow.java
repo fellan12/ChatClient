@@ -31,18 +31,18 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private JTextArea textHistory;
 
 	private Client client;
-	
+
 	//UDP - components
 	private DatagramSocket socket;
 	private InetAddress inet_ip;
 
 	private Thread sendThread;
-	
+
 	/**
 	 * Constructor 1 for ClientWindow
 	 */
 	public ClientWindow(){}
-	
+
 	/**
 	 * Constructor 2 for ClientWindow
 	 */
@@ -50,10 +50,10 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		this.name = name;
 		this.ip = ip;
 		this.port = port;
-		
+
 		client = new Client(ip, port);										//Create a Client Object
-		
-		boolean connect = client.openConnection(ip);					//Connect to server
+
+		boolean connect = client.openConnection(ip, port);					//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
@@ -61,11 +61,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			printToScreen(name + " is connected on " + ip + ":" + port);
 			String connecting = name + " has connected from " + ip + ":" + port; 
 			client.send(connecting);
-			try {
-				client.receive();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			client.receive();
 		}
 	}
 
@@ -189,7 +185,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			txtMessage.setText("");
 		}
 	}
-	
+
 	/**
 	 * Recieve a message from server
 	 * @param output

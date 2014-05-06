@@ -43,7 +43,7 @@ public class Server {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		int port = 123;		// TODO: Start GUI. Get port from user. 
+		int port = 1234;		// TODO: Start GUI. Get port from user. 
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);

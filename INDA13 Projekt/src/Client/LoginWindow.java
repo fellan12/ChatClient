@@ -52,19 +52,19 @@ public class LoginWindow extends JFrame {
 		setSize(366, 531);
 
 		//IP-Address  - TextField
-		textIp = new JTextField();
+		textIp = new JTextField("localhost");
 		textIp.setBounds(90, 145, 180, 32);
 		panel.add(textIp);
 		textIp.setColumns(10);
 
 		//Screen Name  - TextField
-		textName = new JTextField();
+		textName = new JTextField("felix");
 		textName.setBounds(90, 70, 180, 32);
 		textName.setColumns(10);
 		panel.add(textName);
 
 		//Port - TextField
-		textPort = new JTextField();
+		textPort = new JTextField("1234");
 		textPort.setBounds(90, 220, 180, 32);
 		textPort.setColumns(10);
 		panel.add(textPort);
@@ -106,9 +106,9 @@ public class LoginWindow extends JFrame {
 	 */
 	public boolean LoginCheck(){
 		boolean connect = false;
-		if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
+		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
 			Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
-			connect = client.openConnection(textIp.getText());
+			connect = client.openConnection(textIp.getText(), Integer.parseInt(textPort.getText()));
 		}
 		return connect;
 	}
