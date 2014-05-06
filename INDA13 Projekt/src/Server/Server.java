@@ -17,10 +17,11 @@ import java.util.ArrayList;
  * of a client-server chat system.
  * 
  * @author Richard Sjöberg
- * @version 2014-05-05
+ * @version 2014-05-06
  */
 public class Server {
 
+	private static ServerSocket servSock; // 
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
@@ -33,38 +34,23 @@ public class Server {
 	 * 
 	 * Accept all connection requests as long as the server limit has not been reached.
 	 * For all clients connected to the server, create a new thread that takes care
-	 * of the server-client communication. 
+	 * of the server-client communication.
+	 * 		
+	 * // TODO: Error handling. Try/catch. Handle exceptions? 
 	 * 
 	 * @param args Ignore. TODO: Maybe pass in port through args?
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		// TODO: Start GUI. Get port from user.
+
+		int port = 123;		// TODO: Start GUI. Get port from user. 
 		
-		// TODO: Error handling. Try/catch. Handle exceptions?
-
-		// Create a server socket that listens for connection requests on the port specified by the user.
-		ServerSocket servSock = new ServerSocket(123);    
-
+		// Create a server that listens for connection requests on port.
+		Server server = new Server(port);
+		
 		while (true) {
 			if (!serverFull) {
-				// Listen for and accept any incoming connection request.
-				Socket sock = servSock.accept(); // The socket over which to communicate.  
-
-				// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
-				clients.add(sock); // Add the connection socket to clients.  
-
-				// If the server limit has been reached, the server is full. 
-				if (users.size() == LIMIT) {
-					serverFull = true;
-				}
-				
-				System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
-				
-				// Communicate with client in a new thread.
-				ChatService chat = new ChatService(sock); 
-				Thread communicate = new Thread(chat);
-				communicate.start();
+				server.megaMain(); // TODO: Fix.
 			} else {
 				// TODO: Do not accept request. Make sure the "requester" is notified somehow. 
 			}
@@ -76,12 +62,47 @@ public class Server {
 	// Remember to remove static declarations.
 	
 	/**
-	 * Creates a new server
+	 * Creates a new server that listens on the given port.
 	 * 
-	 * @param port 
+	 * @param port A given port.
 	 */
 	public Server(int port) {
-		
+		try {
+			servSock = new ServerSocket(port);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Replaces some aspects of the main funciton.
+	 * 
+	 * TODO: Separate in to smaller, more specific methods.
+	 */
+	public void megaMain() {
+		// Listen for and accept any incoming connection request.
+		Socket sock;
+		try {
+			sock = servSock.accept();
+			// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
+			clients.add(sock); // Add the connection socket to clients.
+
+			// If the server limit has been reached, the server is full. 
+			if (users.size() == LIMIT) {
+				serverFull = true;
+			}
+			
+			System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
+			
+			// Communicate with client in a new thread.
+			ChatService chat = new ChatService(sock); 
+			Thread communicate = new Thread(chat);
+			communicate.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // The socket over which to communicate.  
 	}
 	
 	/**
