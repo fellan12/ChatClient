@@ -37,8 +37,14 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private InetAddress inet_ip;
 
 	private Thread sendThread;
+	
 	/**
-	 * Constructor for ClientWindow
+	 * Constructor 1 for ClientWindow
+	 */
+	public ClientWindow(){}
+	
+	/**
+	 * Constructor 2 for ClientWindow
 	 */
 	public ClientWindow(String name, String ip, int port) {
 		this.name = name;
@@ -54,11 +60,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			define();
 			printToScreen(name + " is connected on " + ip + ":" + port);
 			String connecting = name + " has connected from " + ip + ":" + port; 
-			try {
-				client.send(connecting.getBytes());
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			client.send(connecting);
 			try {
 				client.receive();
 			} catch (IOException e) {
@@ -170,7 +172,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * 
 	 * @param message
 	 */
-	public void printToScreen(String message){
+	private void printToScreen(String message){
 		textHistory.append(message + "\n");
 		textHistory.setCaretPosition(textHistory.getDocument().getLength());					//Sets the caret at the botton
 	}
@@ -183,13 +185,17 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
-			try {
-				client.send(text.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			client.send(text);
 			txtMessage.setText("");
 		}
+	}
+	
+	/**
+	 * Recieve a message from server
+	 * @param output
+	 */
+	public void receive(String output){
+		printToScreen(output);
 	}
 }
 
