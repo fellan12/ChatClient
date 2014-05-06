@@ -7,21 +7,18 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 
-/*Alternatively
- * import java.io*;
- * import java.set.*;
- */
-
 /**
  * This is a server that communicates with clients, as part 
  * of a client-server chat system.
+ * 
+ * // TODO: Error handling. Try/catch. Handle exceptions?
  * 
  * @author Richard Sjöberg
  * @version 2014-05-06
  */
 public class Server {
 
-	private static ServerSocket servSock; // 
+	private ServerSocket servSock; // TODO: 
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
@@ -36,30 +33,32 @@ public class Server {
 	 * For all clients connected to the server, create a new thread that takes care
 	 * of the server-client communication.
 	 * 		
-	 * // TODO: Error handling. Try/catch. Handle exceptions? 
-	 * 
 	 * @param args Ignore. TODO: Maybe pass in port through args?
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+<<<<<<< HEAD
 
 		int port = 1234;		// TODO: Start GUI. Get port from user. 
+=======
+		// TODO: Start GUI. Get port from user.
+		int port = 123;		 
+>>>>>>> 715cd6d5563491265868027098268d21fdcc0785
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
 		
 		while (true) {
 			if (!serverFull) {
-				server.megaMain(); // TODO: Fix.
+				Socket sock = server.acceptRequest();
+				System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
+				server.communicate(sock);
 			} else {
 				// TODO: Do not accept request. Make sure the "requester" is notified somehow. 
 			}
 		}
 		// TODO: Close the ServerSocket. Where?
 	}
-	
-	// TODO: Create a server constructor, and set up the server in that instead.
-	// Remember to remove static declarations.
 	
 	/**
 	 * Creates a new server that listens on the given port.
@@ -76,13 +75,13 @@ public class Server {
 	}
 	
 	/**
-	 * Replaces some aspects of the main funciton.
+	 * Listens for and accepts any incoming connection request on
+	 * servSock. Returns the Socket over which to communicate.
 	 * 
-	 * TODO: Separate in to smaller, more specific methods.
+	 * @return The server over which to communicate.
 	 */
-	public void megaMain() {
-		// Listen for and accept any incoming connection request.
-		Socket sock;
+	private Socket acceptRequest() {
+		Socket sock; // The server over which to communicate.
 		try {
 			sock = servSock.accept();
 			// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
@@ -91,18 +90,31 @@ public class Server {
 			// If the server limit has been reached, the server is full. 
 			if (users.size() == LIMIT) {
 				serverFull = true;
-			}
-			
-			System.out.println("Client connected from: " + sock.getLocalAddress().getHostName()); // TODO: Remove!
-			
+			}	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return sock;
+	}
+	
+	/**
+	 * Creates an instance of ChatService, which handles he communication
+	 * between the server and the clients, in a new thread.
+	 * 
+	 * @param The socket from which to read input from client.
+	 */
+	private void communicate(Socket sock) {
+		try {
 			// Communicate with client in a new thread.
 			ChatService chat = new ChatService(sock); 
 			Thread communicate = new Thread(chat);
 			communicate.start();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} // The socket over which to communicate.  
+		} 
 	}
 	
 	/**
@@ -117,12 +129,10 @@ public class Server {
 		 * Add the name to users.
 		 * Echo the users to all clients. (send the users list to the clients).
 		 */
-			
-		// So many ways to read/write from/to sockets! Which one to use?!
 	}
 	
 	/**
-	 * Echos the users list to all clients connected to the server.
+	 * Echoes the users list to all clients connected to the server.
 	 * The method should be executed whenever users are connected
 	 * or disconnected to the server; whenever users are added or 
 	 * removed from the users list. This is to insure that all 
@@ -130,9 +140,9 @@ public class Server {
 	 */
 	private void updateUsers() {
 		/* TODO
+		 * echo users list
 		 * update boolean
 		 */
-		
 	}
 
 	/**
@@ -143,7 +153,7 @@ public class Server {
 	 * this class (as a new ChatService instance is initiated).
 	 * 
 	 * @author Richard Sjöberg
-	 * @version 2014-05-05
+	 * @version 2014-05-06
 	 */
 	public class ChatService implements Runnable {
 		
