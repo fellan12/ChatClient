@@ -26,19 +26,8 @@ public class Client {
 	public Client(String ip, int port){
 		this.port = port;
 
-		try {
-			openConnection(ip);
+			openConnection(ip, port);
 			receive();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				socket.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**
@@ -48,10 +37,11 @@ public class Client {
 	 * @param port - Port to the server
 	 * @return true/false - if the connection worked
 	 */
-	public boolean openConnection(String ip){
+	public boolean openConnection(String ip, int port){
 		try {
 			inet_ip = InetAddress.getByName(ip);
 			socket = new Socket(inet_ip, port);
+			System.out.println(socket.isConnected());
 			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,7 +56,7 @@ public class Client {
 	 * @return message - the recevied message.
 	 * @throws IOException 
 	 */
-	public void receive() throws IOException{
+	public void receive() {
 		final ClientWindow window = new ClientWindow(); 
 		recieveThread = new Thread("Receive Thread"){
 
@@ -74,6 +64,8 @@ public class Client {
 				try {
 					ObjectInputStream inFromServer = null;
 					while(running){
+						System.out.println(socket.isConnected());
+						System.out.println(socket.getPort());
 						inFromServer = new ObjectInputStream(socket.getInputStream());
 						String message = (String) inFromServer.readObject();			//Put message from stream to string
 
@@ -99,6 +91,7 @@ public class Client {
 		sendThread = new Thread("Send Thread"){
 			public void run(){
 				try {
+					System.out.println(socket.isConnected());
 					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());
 					outToServer.writeObject(message);
 					outToServer.close();

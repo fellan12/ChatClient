@@ -37,8 +37,8 @@ public class Server {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		// TODO: Start GUI. Get port from user.
-		int port = 123;		 
+
+		int port = 1234;		// TODO: Start GUI. Get port from user. 
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
@@ -80,6 +80,8 @@ public class Server {
 		Socket sock; // The server over which to communicate.
 		try {
 			sock = servSock.accept();
+			System.out.println("socket in server isconneced? : " + sock.isConnected());
+			System.out.println("socket in server isClosed? : " + sock.isClosed());
 			// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
 			clients.add(sock); // Add the connection socket to clients.
 
