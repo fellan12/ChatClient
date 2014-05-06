@@ -1,13 +1,11 @@
-import java.io.BufferedReader;
+package Server;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintStream;
 import java.net.Socket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
-import java.io.PrintWriter;
 
 /*Alternatively
  * import java.io*;
@@ -23,6 +21,7 @@ import java.io.PrintWriter;
  */
 public class Server {
 
+	private static ServerSocket servSock; // TODO:
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
@@ -44,10 +43,8 @@ public class Server {
 		// TODO: Start GUI. Get port from user.
 		
 		// TODO: Error handling. Try/catch. Handle exceptions?
-
-		// Create a server socket that listens for connection requests on the port specified by the user.
-		ServerSocket servSock = new ServerSocket(123);    
-
+		Server server = new Server(123);
+		
 		while (true) {
 			if (!serverFull) {
 				// Listen for and accept any incoming connection request.
@@ -76,6 +73,21 @@ public class Server {
 	
 	// TODO: Create a server constructor, and set up the server in that instead.
 	// Remember to remove static declarations.
+	
+	/**
+	 * Creates a new server
+	 * 
+	 * @param port 
+	 */
+	public Server(int port) {
+		// Create a server socket that listens for connection requests on the port specified by the user.
+		try {
+			servSock = new ServerSocket(port);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
+	}
 	
 	/**
 	 * Gets the screen name of the (user of the) client connected to the given socket,
@@ -162,43 +174,46 @@ public class Server {
 		 * to all clients connected to the server TODO: Which server?.  
 		 */
 		public void run() {
-			// TODO: Receive message from client. Echo it.
-			// Check connection?
-			try {
-				// Read the client input from the socket to ObjectInputStream.
-				ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
-				// OBS! The client can only send string messages to server! This may be changed for future versions.
-				String message = (String) input.readObject(); // The message read from socket.
-				echoMessage(message); // Echoes the message to all clients connected to the server.
-				input.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			while (true) {
+				// If 
+				if (sock.isClosed()) {
+					break;
+				}
+				
+				try {
+					// Read the client input from the socket to ObjectInputStream.
+					ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
+					// OBS! The client can only send string messages to server! This may be changed for future versions.
+					String message = (String) input.readObject(); // The message read from socket.
+					echoMessage(message); // Echoes the message to all clients connected to the server.
+					input.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
 		}
 		
 		/**
-		 * Echoes a given message (of type string) to all clients connected
+		 * Sends a given message (of type string) to all clients connected
 		 * to the server.
 		 * 
 		 * @param message The message to be echoed.
 		 */
 		private void echoMessage(String message) {
-			// TODO:
 			for (Socket client : clients) {
-				// Send message on socket, client.
+				// Send message on client.
 				try {
 					ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 					output.writeObject(message);
-					output.close(); // Close the output stream.					
+					output.close();					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
 			}
 		}
 	}

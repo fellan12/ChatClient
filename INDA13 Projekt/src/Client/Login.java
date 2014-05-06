@@ -1,10 +1,10 @@
 package Client;
 
-import Server.Server;
+import Server.Server2;
 
 public class Login {
 	
-	private Server server;
+	private Server2 server;
 	
 	/**
 	 * Login Procedure
