@@ -107,7 +107,7 @@ public class LoginWindow extends JFrame {
 	public boolean LoginCheck(){
 		boolean connect = false;
 		if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
-			Client client = new Client(Integer.parseInt(textPort.getText()));
+			Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
 			connect = client.openConnection(textIp.getText());
 		}
 		return connect;

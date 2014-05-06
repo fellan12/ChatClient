@@ -51,7 +51,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		this.ip = ip;
 		this.port = port;
 		
-		client = new Client(port);										//Create a Client Object
+		client = new Client(ip, port);										//Create a Client Object
 		
 		boolean connect = client.openConnection(ip);					//Connect to server
 		if(!connect){

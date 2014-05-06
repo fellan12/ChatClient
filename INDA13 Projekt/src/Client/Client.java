@@ -23,10 +23,11 @@ public class Client {
 	
 	private boolean running;
 
-	public Client(int port){
+	public Client(String ip, int port){
 		this.port = port;
 
 		try {
+			openConnection(ip);
 			receive();
 
 		} catch (IOException e) {
