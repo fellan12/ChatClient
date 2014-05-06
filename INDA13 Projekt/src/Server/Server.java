@@ -37,13 +37,8 @@ public class Server {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-<<<<<<< HEAD
 
 		int port = 1234;		// TODO: Start GUI. Get port from user. 
-=======
-		// TODO: Start GUI. Get port from user.
-		int port = 123;		 
->>>>>>> 715cd6d5563491265868027098268d21fdcc0785
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
