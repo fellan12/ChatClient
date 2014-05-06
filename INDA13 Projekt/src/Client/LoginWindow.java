@@ -89,7 +89,7 @@ public class LoginWindow extends JFrame {
 		btnNewButton.setBounds(130, 347, 100, 30);
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				if(LoginProcedure()){
+				if(LoginCheck()){
 					login();
 				}else{
 					JOptionPane.showMessageDialog(null, "Invalid Input");
@@ -104,12 +104,13 @@ public class LoginWindow extends JFrame {
 	 * 
 	 * Checks that all the inputs are correct
 	 */
-	public boolean LoginProcedure(){
+	public boolean LoginCheck(){
+		boolean connect = false;
 		if(!textName.getText().isEmpty() && !textIp.getText().isEmpty() && !textPort.getText().isEmpty()){
-			return true;
-		}else{
-			return false;
+			Client client = new Client(Integer.parseInt(textPort.getText()));
+			connect = client.openConnection(textIp.getText());
 		}
+		return connect;
 	}
 
 	/**
