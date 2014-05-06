@@ -21,7 +21,6 @@ import java.util.ArrayList;
  */
 public class Server {
 
-	private static ServerSocket servSock; // TODO:
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
@@ -43,8 +42,10 @@ public class Server {
 		// TODO: Start GUI. Get port from user.
 		
 		// TODO: Error handling. Try/catch. Handle exceptions?
-		Server server = new Server(123);
-		
+
+		// Create a server socket that listens for connection requests on the port specified by the user.
+		ServerSocket servSock = new ServerSocket(123);    
+
 		while (true) {
 			if (!serverFull) {
 				// Listen for and accept any incoming connection request.
@@ -80,13 +81,7 @@ public class Server {
 	 * @param port 
 	 */
 	public Server(int port) {
-		// Create a server socket that listens for connection requests on the port specified by the user.
-		try {
-			servSock = new ServerSocket(port);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}    
+		
 	}
 	
 	/**
@@ -144,39 +139,14 @@ public class Server {
 		}
 		
 		/**
-		 * Checks if the given socket has been disconnected from the server,
-		 * and if so removes it from the clients list.
-		 * 
-		 * @param sock The given socket.
-		 */
-		private void checkConnection(Socket sock) {
-			if (sock.isClosed()) {
-				removeSock(sock);
-			}
-		}
-		
-		/**
-		 * Removes the given socket from the clients list.
-		 * 
-		 * @param sock The socket to be removed.
-		 */
-		private void removeSock(Socket sock) {
-			for (int i = 0; i < Server.clients.size(); i++) {
-				if (Server.clients.get(i) == sock) {
-					Server.clients.remove(i);
-				}
-			}
-			// TODO: Update users. Echo the users list to all connected clients.
-		}
-		
-		/**
 		 * Receives messages from the socket, sock, and echoes the messages 
 		 * to all clients connected to the server TODO: Which server?.  
 		 */
 		public void run() {
 			while (true) {
-				// If 
+				// If socket has been closed and disconnected from the server.
 				if (sock.isClosed()) {
+					removeSock(sock); 
 					break;
 				}
 				
@@ -195,6 +165,20 @@ public class Server {
 					e.printStackTrace();
 				}				
 			}
+		}
+		
+		/**
+		 * Removes the given socket from the clients list.
+		 * 
+		 * @param sock The socket to be removed.
+		 */
+		private void removeSock(Socket sock) {
+			for (int i = 0; i < Server.clients.size(); i++) {
+				if (Server.clients.get(i) == sock) {
+					Server.clients.remove(i);
+				}
+			}
+			// TODO: Update users. Echo the users list to all connected clients.
 		}
 		
 		/**
