@@ -186,7 +186,9 @@ public class Server {
 		 * @param message The message to be echoed.
 		 */
 		private void echoMessage() {
-			
+			for () {
+				
+			}
 		}
 		
 		
