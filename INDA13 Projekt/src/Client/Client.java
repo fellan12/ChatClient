@@ -52,6 +52,28 @@ public class Client {
 	public boolean isConnectionOpen(){
 		return socket.isConnected();
 	}
+	
+	public boolean verifyNameAndSpace(String name){
+		
+		send(name);				//Send name to verify
+		
+		ObjectInputStream inFromServer = null;
+		String verifyMessage = null;
+		boolean verify = false;
+		try {
+			inFromServer = new ObjectInputStream(socket.getInputStream());	//Wait for response
+			verifyMessage = (String) inFromServer.readObject();			//Put message from stream to string
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(verifyMessage.equals("true")){
+			verify = false;
+		}else if(verifyMessage.equals("false")){
+			verify = true;
+		}
+		return verify;
+	}
 
 	/**
 	 * receives messeges from the server.
