@@ -65,6 +65,7 @@ public class Client {
 					ObjectInputStream inFromServer = null;
 					while(running){
 						System.out.println(socket.isConnected());
+						System.out.println(socket.getPort());
 						inFromServer = new ObjectInputStream(socket.getInputStream());
 						String message = (String) inFromServer.readObject();			//Put message from stream to string
 

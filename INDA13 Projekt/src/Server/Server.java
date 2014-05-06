@@ -79,6 +79,8 @@ public class Server {
 		Socket sock; // The server over which to communicate.
 		try {
 			sock = servSock.accept();
+			System.out.println("socket in server isconneced? : " + sock.isConnected());
+			System.out.println("socket in server isClosed? : " + sock.isClosed());
 			// TODO: Only one instance of a socket? Add only if it doesn't already exist in list??
 			clients.add(sock); // Add the connection socket to clients.
 
