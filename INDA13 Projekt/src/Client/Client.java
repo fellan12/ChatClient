@@ -28,6 +28,7 @@ public class Client {
 
 			openConnection(ip, port);
 			receive();
+			//test
 	}
 
 	/**
