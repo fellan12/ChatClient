@@ -109,7 +109,7 @@ public class LoginWindow extends JFrame {
 		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
 			Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
 			connect = client.isConnectionOpen();
-			if(connect && client.verifyNameAndSpace(textName.getText())){
+			if(connect && client.verifyConnection(textName.getText())){
 				return connect;
 			}
 		}
