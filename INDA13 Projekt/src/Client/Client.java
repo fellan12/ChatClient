@@ -48,6 +48,32 @@ public class Client {
 		}
 		return true;
 	}
+	
+	public boolean isConnectionOpen(){
+		return socket.isConnected();
+	}
+	
+	public boolean verifyNameAndSpace(String name){
+		
+		send(name);				//Send name to verify
+		
+		ObjectInputStream inFromServer = null;
+		String verifyMessage = null;
+		boolean verify = false;
+		try {
+			inFromServer = new ObjectInputStream(socket.getInputStream());	//Wait for response
+			verifyMessage = (String) inFromServer.readObject();			//Put message from stream to string
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(verifyMessage.equals("true")){
+			verify = false;
+		}else if(verifyMessage.equals("false")){
+			verify = true;
+		}
+		return verify;
+	}
 
 	/**
 	 * receives messeges from the server.
@@ -57,8 +83,7 @@ public class Client {
 	 */
 	public void receive() {
 		final ClientWindow window = new ClientWindow(); 
-		recieveThread = new Thread("Receive Thread"){
-
+		recieveThread = new Thread("Receive-Thread"){
 			public void run(){
 				try {
 					ObjectInputStream inFromServer = null;
@@ -87,7 +112,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send Thread"){
+		sendThread = new Thread("Send-Thread"){
 			public void run(){
 				try {
 					System.out.println(socket.isConnected());

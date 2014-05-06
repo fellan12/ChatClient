@@ -58,6 +58,7 @@ public class Server {
 	 */
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
+		users = new ArrayList<>();
 		
 		try {
 			servSock = new ServerSocket(port);
