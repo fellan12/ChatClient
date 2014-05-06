@@ -27,7 +27,6 @@ public class Client {
 		this.port = port;
 
 			openConnection(ip, port);
-			receive();
 	}
 
 	/**
