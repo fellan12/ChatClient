@@ -24,19 +24,12 @@ import java.net.UnknownHostException;
 public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 	private JPanel panel;
-	private String name, ip;
-	private int port;
+	private String name;
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
-	private JTextArea textHistory;
+	private JTextArea textConversation;
 
 	private Client client;
-
-	//UDP - components
-	private DatagramSocket socket;
-	private InetAddress inet_ip;
-
-	private Thread sendThread;
 
 	/**
 	 * Constructor 1 for ClientWindow
@@ -46,20 +39,12 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	/**
 	 * Constructor 2 for ClientWindow
 	 */
-	public ClientWindow(String name, String ip, int port) {
+	public ClientWindow(String name, Client client) {
 		this.name = name;
-		this.ip = ip;
-		this.port = port;
+		this.client = client;
 
-		client = new Client(ip, port);										//Create a Client Object
-
-		boolean connect = client.isConnectionOpen();					//Connect to server
-		if(!connect){
-			System.err.println("Connection failed!");
-		}else{
-			define();
-			client.receive();
-		}
+		define();
+		client.receive();
 	}
 
 	/**
@@ -90,11 +75,11 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		layout.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		panel.setLayout(layout);
 
-		//On Screen History - TextArea/JScrollPane
-		textHistory = new JTextArea();
-		textHistory.setFont(new Font("Arial", Font.PLAIN, 18));
-		textHistory.setEditable(false);
-		JScrollPane scroll = new JScrollPane(textHistory);
+		//On Screen Conversation - TextArea/JScrollPane
+		textConversation = new JTextArea(20, 30);
+		textConversation.setFont(new Font("Arial", Font.PLAIN, 18));
+		textConversation.setEditable(false);
+		JScrollPane scroll = new JScrollPane(textConversation);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
 		scrollConstrains.insets = new Insets(0, 12, 5, 5);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
@@ -103,6 +88,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		scrollConstrains.gridwidth = 3;
 		scrollConstrains.gridheight = 2;
 		panel.add(scroll, scrollConstrains);
+		System.out.println(textConversation == null);
 
 		//Message Field - TextField
 		txtMessage = new JTextField();
@@ -157,7 +143,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 				System.exit(0);
 			}
 		});
-		fileMenu.add(menuItemExit);
+		fileMenu.add(menuItemExit);		
 	}
 
 	/**
@@ -166,8 +152,9 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * @param message
 	 */
 	private void printToScreen(String message){
-		textHistory.append(message + "\n");
-		textHistory.setCaretPosition(textHistory.getDocument().getLength());					//Sets the caret at the botton
+		System.out.println("in print " + (textConversation == null));
+		textConversation.append(message + "\n");
+		textConversation.setCaretPosition(textConversation.getDocument().getLength());					//Sets the caret at the botton
 	}
 
 	/**
@@ -178,17 +165,19 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
+			System.out.println("in send " + (textConversation == null));
 			client.send(text);
 			txtMessage.setText("");
 		}
 	}
 
 	/**
-	 * Recieve a message from server
+	 * Receive a message from server
 	 * @param output
 	 */
-	public void receive(String output){
-		printToScreen(output);
+	public void receive(String fromServer){
+		System.out.println("in recieve " + (textConversation == null));
+		printToScreen(fromServer);
 	}
 }
 

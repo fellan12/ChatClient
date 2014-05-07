@@ -91,8 +91,10 @@ public class LoginWindow extends JFrame {
 		btnNewButton.setBounds(130, 347, 100, 30);
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				if(LoginCheck()){
-					login();
+				System.out.println("click");
+				Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
+				if(LoginCheck(client)){
+					login(client);
 				}else{
 					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
@@ -106,9 +108,8 @@ public class LoginWindow extends JFrame {
 	 * 
 	 * Checks that all the inputs are correct
 	 */
-	public boolean LoginCheck(){
+	public boolean LoginCheck(Client client){
 		boolean connect = false;
-		Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
 		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
 			if(client.verifyConnection(textName.getText()) && client.isConnectionOpen()){
 				connect = true;
@@ -126,12 +127,10 @@ public class LoginWindow extends JFrame {
 	 * @param ip - the Ip-address to the server
 	 * @param port - the port to the server.
 	 */
-	public void login(){
+	public void login(Client client){
 		dispose();
 		String name = textName.getText();
-		String ip = textIp.getText();
-		int port = Integer.parseInt(textPort.getText());
-		new ClientWindow(name, ip, port);
+		new ClientWindow(name, client);
 	}
 
 

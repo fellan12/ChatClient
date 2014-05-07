@@ -44,11 +44,16 @@ public class Server {
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
 		
-		while (true) {
+		while (!serverFull) {
 			Object[] streams = server.acceptRequest(); // The socket from which to read client input.
+<<<<<<< HEAD
+=======
+			
+>>>>>>> 41f434b20724baf37358ddafa35ef96f7cf50d30
 			if (streams != null) { // Client is connected to server.
 				ObjectInputStream input = (ObjectInputStream) streams[1];
 				server.communicate(input); // Communicate with clients.
+				System.out.println("Communication started");
 			}
 		}
 		// TODO: Close the ServerSocket. Where?
@@ -287,7 +292,6 @@ public class Server {
 					System.out.println("Received message: " + message);
 					echoMessage(message); // Echoes the message to all clients connected to the server.`
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 					System.err.println("Fail - RunException");
 					System.exit(1);
@@ -318,13 +322,12 @@ public class Server {
 		 */
 		private void echoMessage(String message) {
 			for (ObjectOutputStream output : outStreams) {
-				// Send message on client.
+				// Send message to client.
 				try {
 					output.writeObject(message);
 					System.out.println("Sent message: " + message);
 					output.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
