@@ -200,7 +200,6 @@ public class Server {
 			ObjectOutputStream output = outputStream;
 			output.writeObject(connected);
 			output.flush();
-			output.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,7 +240,6 @@ public class Server {
 				ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 				output.writeObject(users);
 				output.flush();
-				output.close();					
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -325,7 +323,6 @@ public class Server {
 					output.writeObject(message);
 					System.out.println("Sent message: " + message);
 					output.flush();
-					output.close();					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

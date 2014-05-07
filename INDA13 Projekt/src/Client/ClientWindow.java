@@ -75,7 +75,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		setContentPane(panel);
 
 		//Frame Settings
-		setTitle("Chatroom");
+		setTitle("InstaChat");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1000, 800);
