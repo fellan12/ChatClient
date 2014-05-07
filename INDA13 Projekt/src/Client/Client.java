@@ -38,8 +38,8 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			inet_ip = InetAddress.getByName(ip);							//Make String ip to Inet-address ip
-			socket = new Socket(inet_ip, port);								//Make a socket connection to ip and port
+			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
+			socket = new Socket(inet_ip, port);											//Make a socket connection to ip and port
 			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,13 +66,13 @@ public class Client {
 	 */
 	public boolean verifyConnection(String userName){
 		
-		send(userName);															//Send name to server for verify
+		send(userName);																	//Send name to server for verify
 		
 		ObjectInputStream inFromServer = null;
 		boolean verify = false;
 		try {
-			inFromServer = new ObjectInputStream(socket.getInputStream());	//Creat a inputstream
-			verify = (boolean) inFromServer.readObject();				//wait to put message from stream to boolean
+			inFromServer = new ObjectInputStream(socket.getInputStream());				//Creat a inputstream
+			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -92,21 +92,21 @@ public class Client {
 				try {
 					ObjectInputStream inFromServer = null;
 					while(running){
-						inFromServer = new ObjectInputStream(socket.getInputStream());	//Creat a inputstream
+						inFromServer = new ObjectInputStream(socket.getInputStream());	//Create a inputstream
 						String message = (String) inFromServer.readObject();			//wait to put message from stream to string
 
 						if(!message.equals("")){
 							window.receive(message);									//Send message to ClientWindow
 						}
 					}
-					inFromServer.close();											//Close input Stream
+					inFromServer.close();												//Close input Stream
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 				
 			}
 		};	
-		recieveThread.start();														//Start the thread
+		recieveThread.start();															//Start the thread
 	}
 
 	/**
@@ -114,19 +114,19 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send-Thread"){										//Thread
+		sendThread = new Thread("Send-Thread"){											//Thread
 			public void run(){
 				try {
 					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
-					outToServer.writeObject(message);								//send message through the stream
-					outToServer.close();											//Close the stream
+					outToServer.writeObject(message);									//send message through the stream
+					outToServer.close();												//Close the stream
 				} catch (IOException e) {		
 					e.printStackTrace();
 				}
 				
 			}
 		};
-		sendThread.start();															//Start the thread
+		sendThread.start();																//Start the thread
 	}
 
 }
