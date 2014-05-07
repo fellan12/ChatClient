@@ -19,18 +19,13 @@ public class Client {
 	private InetAddress inet_ip;
 
 	private Thread sendThread, recieveThread;
-	private int port;
-
+	
 	private ObjectInputStream inFromServer = null;
 	private ObjectOutputStream outToServer = null;
-
-
 
 	private boolean running;
 
 	public Client(String ip, int port){
-		this.port = port;
-
 		openConnection(ip, port);
 	}
 
@@ -48,8 +43,8 @@ public class Client {
 			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
 			System.out.println("socket recieved");
 			InputStream input = socket.getInputStream();
-			inFromServer = new ObjectInputStream(input);				//Create a inputstream
-			outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
+			inFromServer = new ObjectInputStream(input);							//Create a inputstream
+			outToServer = new ObjectOutputStream(socket.getOutputStream());			//Creates a OutputStream
 			running = true;
 			System.out.println("Connetions open");
 		} catch (IOException e) {
