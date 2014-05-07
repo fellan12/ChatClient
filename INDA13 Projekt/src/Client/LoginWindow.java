@@ -43,13 +43,15 @@ public class LoginWindow extends JFrame {
 		//Frame
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(750, 300, getWidth(), getHeight());
+		setResizable(false);
+		setTitle("InstaChat");
+		setSize(366, 531);
+		
+		//Panel
 		panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5,5,5,5));
 		panel.setLayout(null);
 		setContentPane(panel);
-		setResizable(false);
-		setTitle("Login");
-		setSize(366, 531);
 
 		//IP-Address  - TextField
 		textIp = new JTextField("localhost");
