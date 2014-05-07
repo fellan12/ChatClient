@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * This is a server that communicates with clients, as part 
  * of a client-server chat system.
  * 
- * // TODO: Error handling. Try/catch. Handle exceptions?
+ * TODO: Error handling. Try/catch. Handle exceptions?
  * 
  * @author Richard Sjöberg
  * @version 2014-05-06
@@ -23,7 +23,7 @@ public class Server {
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
 	private static boolean serverFull; // If users.size() == LIMIT.
-
+	
 	/**
 	 * Set up a server. Listen for connection requests to the server on the port,
 	 * specified by the user who is trying to set up the server. If the port can 
@@ -37,19 +37,11 @@ public class Server {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		//		int port;
-		//		if(args.length != 1){
-		//			System.err.println("Invalid arguments");
-		//			return;
-		//		}
-		//		
-		//		port = Integer.parseInt(args[0]);
-		//		
 		int port = 1234; // TODO: Start GUI. Get port from user. 
-
+		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
-
+		
 		while (true) {
 			Socket sock = server.acceptRequest(); // The socket from which to read client input.
 			if (sock != null) // Client is connected to server.
@@ -57,7 +49,7 @@ public class Server {
 		}
 		// TODO: Close the ServerSocket. Where?
 	}
-
+	
 	/**
 	 * Creates a new server that listens on the given port.
 	 * 
@@ -66,7 +58,7 @@ public class Server {
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
-
+		
 		try {
 			servSock = new ServerSocket(port);
 		} catch (IOException e) {
@@ -74,7 +66,7 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Listens for and accepts any incoming connection request on servSock. 
 	 * The client is allowed to connect to the chat if the server is not 
@@ -91,22 +83,23 @@ public class Server {
 	 */
 	private Socket acceptRequest() {
 		Socket sock = null; // The socket over which to communicate.
-
+		
 		try {
 			sock = servSock.accept(); 
-
+			
 			if (!serverFull && !nameInUse(sock)) {
 				clients.add(sock); // Add the connection socket to clients.
 
 				// If the server limit has been reached, the server is full. 
-				if (users.size() == LIMIT){
+				if (users.size() == LIMIT)
 					serverFull = true;
-				}
 				sendConnectionStatus(true, sock);
+				System.out.println("Good to go!");
 			} else {
 				// Client is not connected to server.
-				sock = null;
 				sendConnectionStatus(false, sock);
+				sock = null;
+				System.out.println("Can't connect.");
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -114,7 +107,7 @@ public class Server {
 		}
 		return sock;
 	}
-
+	
 	/**
 	 * Checks that a user with the screen name received from the given socket 
 	 * isn't already connected to the server, that it isn't already in the
@@ -126,17 +119,23 @@ public class Server {
 	 */
 	private boolean nameInUse(Socket sock) {
 		ObjectInputStream input;
-		boolean nameInUse = false; // Name not in use.
-
+		boolean nameInUse = false; // Name already in use.
+		
 		try {
 			input = new ObjectInputStream(sock.getInputStream());
 			String name = (String) input.readObject();
+			System.out.println("Name request from client: " + name);
+			
 			if (users.contains(name)) {
 				nameInUse = true;
+				System.out.println("Already in use. Can't connect.");
 			} else {
 				nameInUse = false;
+				users.add(name);
+				System.out.println("Not in use. Good to connect!");
 			}
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return nameInUse;
@@ -153,12 +152,12 @@ public class Server {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
 			output.writeObject(connected);
-			output.flush();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * Creates an instance of ChatService, which handles he communication
 	 * between the server and the clients, in a new thread.
@@ -176,7 +175,7 @@ public class Server {
 			e.printStackTrace();
 		} 
 	}
-
+	
 	/**
 	 * Echoes the users list to all clients connected to the server.
 	 * The method should be executed whenever users are connected
@@ -212,9 +211,9 @@ public class Server {
 	 * @version 2014-05-06
 	 */
 	private class ChatService implements Runnable {
-
+		
 		Socket sock; // The socket from which to read input.
-
+		
 		/**
 		 * Creates a new ChatService that handles the communication
 		 * between a server and its clients.
@@ -224,7 +223,7 @@ public class Server {
 		public ChatService(Socket sock) {
 			this.sock = sock;
 		}
-
+		
 		/**
 		 * Receives messages from the socket, sock, and echoes the messages 
 		 * to all clients connected to the server TODO: Which server?.  
@@ -236,7 +235,7 @@ public class Server {
 					removeSock(sock); 
 					break;
 				}
-
+				
 				try {
 					// Read the client input from the socket to ObjectInputStream.
 					ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
@@ -253,7 +252,7 @@ public class Server {
 				}
 			}
 		}
-
+		
 		/**
 		 * Removes the given socket from the clients list.
 		 * 
@@ -267,7 +266,7 @@ public class Server {
 			}
 			// TODO: Update users. Echo the users list to all connected clients.
 		}
-
+		
 		/**
 		 * Sends a given message (of type string) to all clients connected
 		 * to the server.
@@ -280,6 +279,7 @@ public class Server {
 				try {
 					ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 					output.writeObject(message);
+					output.flush();
 					output.close();					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
