@@ -288,7 +288,6 @@ public class Server {
 					String message = (String) input.readObject(); // The message read from socket.
 					System.out.println("Received message: " + message);
 					echoMessage(message); // Echoes the message to all clients connected to the server.`
-					input.close();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
