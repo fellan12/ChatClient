@@ -34,7 +34,9 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	/**
 	 * Constructor 1 for ClientWindow
 	 */
-	public ClientWindow(){}
+	public ClientWindow(){
+		define();
+	}
 
 	/**
 	 * Constructor 2 for ClientWindow
