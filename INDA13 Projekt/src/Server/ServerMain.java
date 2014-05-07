@@ -1,5 +1,7 @@
 package Server;
 
+import Server;
+
 public class ServerMain {
 	
 	private int port;
