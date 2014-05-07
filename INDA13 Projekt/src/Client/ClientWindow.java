@@ -153,7 +153,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 */
 	private void printToScreen(String message){
 		System.out.println("in print " + (textConversation == null));
-		textConversation.append(message + "\n");
+		textConversation.append(message + "\n");	//<-----nullpointer
 		textConversation.setCaretPosition(textConversation.getDocument().getLength());					//Sets the caret at the botton
 	}
 
