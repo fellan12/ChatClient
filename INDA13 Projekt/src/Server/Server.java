@@ -153,6 +153,7 @@ public class Server {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
 			output.writeObject(connected);
+			output.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

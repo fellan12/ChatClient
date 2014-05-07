@@ -71,7 +71,7 @@ public class Client {
 		ObjectInputStream inFromServer = null;
 		boolean verify = false;
 		try {
-			inFromServer = new ObjectInputStream(socket.getInputStream());				//Creat a inputstream
+			inFromServer = new ObjectInputStream(socket.getInputStream());				//Create a inputstream
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -119,7 +119,7 @@ public class Client {
 				try {
 					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
 					outToServer.writeObject(message);									//send message through the stream
-					outToServer.close();												//Close the stream
+					outToServer.flush();
 				} catch (IOException e) {		
 					e.printStackTrace();
 				}
