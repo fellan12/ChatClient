@@ -152,6 +152,8 @@ public class Server {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
 			output.writeObject(connected);
+			output.flush();
+			output.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
