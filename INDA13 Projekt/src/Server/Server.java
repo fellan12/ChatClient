@@ -151,6 +151,7 @@ public class Server {
 	private void sendConnectionStatus(boolean connected, Socket sock) {
 		try {
 			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
+			System.out.println("socket is open?: " + sock.isConnected());
 			output.writeObject(connected);
 			output.flush();
 			output.close();
