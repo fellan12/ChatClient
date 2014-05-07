@@ -37,6 +37,14 @@ public class Server {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+//		int port;
+//		if(args.length != 1){
+//			System.err.println("Invalid arguments");
+//			return;
+//		}
+//		
+//		port = Integer.parseInt(args[0]);
+//		
 		int port = 1234; // TODO: Start GUI. Get port from user. 
 		
 		// Create a server that listens for connection requests on port.
