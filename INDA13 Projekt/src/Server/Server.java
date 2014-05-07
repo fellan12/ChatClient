@@ -1,7 +1,5 @@
 package Server;
 
-import Server;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,19 +12,21 @@ import java.util.ArrayList;
  * of a client-server chat system.
  * 
  * TODO: Error handling. Try/catch. Handle exceptions?
+ * TODO: Close the sockets (sock + servSock)
  * 
  * @author Richard Sjöberg
- * @version 2014-05-06
+ * @version 2014-05-07
  */
-public class Server2 {
+public class Server {
 
 	private ServerSocket servSock; // TODO: 
-	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
-	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
 	private static boolean serverFull; // If users.size() == LIMIT.
-
-
+	private static boolean isRunning; // If server is running.
+	
+	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
+	private static ArrayList<ObjectOutputStream> outStreams; // The output streams of this server's client-server connections.
+	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	
 	/**
 	 * Set up a server. Listen for connection requests to the server on the port,
@@ -37,7 +37,7 @@ public class Server2 {
 	 * For all clients connected to the server, create a new thread that takes care
 	 * of the server-client communication.
 	 * 		
-	 * @param args Ignore. TODO: Maybe pass in port through args?
+	 * @param args Ignore.
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
@@ -45,13 +45,15 @@ public class Server2 {
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
-		
-		while (true) {
-			Socket sock = server.acceptRequest(); // The socket from which to read client input.
-			if (sock != null) // Client is connected to server.
-				server.communicate(sock); // Communicate with clients.
+				
+		while (isRunning) {
+			Object[] streams = server.acceptRequest(); // The socket from which to read client input.
+			
+			if (streams != null) { // Client is connected to server.
+				//ObjectInputStream input = (ObjectInputStream) streams[1];
+				server.communicate((ObjectInputStream) streams[1]); // Communicate with clients.
+			}
 		}
-		// TODO: Close the ServerSocket. Where?
 	}
 	
 	/**
@@ -62,12 +64,15 @@ public class Server2 {
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
-		
+		outStreams = new ArrayList<ObjectOutputStream>();
+				
 		try {
 			servSock = new ServerSocket(port);
+			isRunning = true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			isRunning = false; // TODO: Unnecessary?
 		}
 	}
 	
@@ -75,7 +80,7 @@ public class Server2 {
 	 * Listens for and accepts any incoming connection request on servSock. 
 	 * The client is allowed to connect to the chat if the server is not 
 	 * full, and does not contain any user with the requested screen name
-	 * (screen name is sent on the socket). Returns the Socket over which 
+	 * (screen name is sent on the socket). Returns the streams over which 
 	 * to communicate.
 	 * 
 	 * If the client is allowed to connect to the chat, the client is added to
@@ -83,81 +88,127 @@ public class Server2 {
 	 * The connection status is sent on the socket, which tells the client 
 	 * whether its connect request was successful.
 	 *  
-	 * @return The socket over which to communicate, or null if client is not allowed connect.
+	 * @return The object streams of the stored in an array, null if request failed.
 	 */
-	private Socket acceptRequest() {
+	private Object[] acceptRequest() {
 		Socket sock = null; // The socket over which to communicate.
+		Object[] streams; // The streams of the socket.
 		
 		try {
-			sock = servSock.accept();
+			// TODO: PROBLEM?!
+			sock = servSock.accept(); 
+			streams = getStreams(sock); 
 			
-			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
-			ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
-			
-			if (!serverFull && !nameInUse(input)) {
-				clients.add(sock); // Add the connection socket to clients.
-
-				// If the server limit has been reached, the server is full. 
-				if (users.size() == LIMIT)
-					serverFull = true;
-				sendConnectionStatus(true, output);
-				System.out.println("Good to go!");
-			} else {
-				// Client is not connected to server.
-				sendConnectionStatus(false, output);
-				sock = null;
-				System.out.println("Can't connect.");
+			if (streams != null) {
+				ObjectOutputStream output = (ObjectOutputStream) streams[0];
+				ObjectInputStream input = (ObjectInputStream) streams[1];
+				
+				if (!serverFull && !nameInUse(input)) {
+					// TODO: Problem adding/removing from clients and outStreams?
+					clients.add(sock); // Add the connection socket to clients.
+					outStreams.add(output); // Add the output stream of the socket to outStreams.
+					
+					// If the server limit has been reached, the server is full. 
+					if (users.size() == LIMIT) { 
+						serverFull = true;
+					}
+					sendConnectionStatus(true, output);
+					System.out.println("Good to go!"); // TODO: Remove.
+				} else {
+					// Client is not connected to server.
+					sendConnectionStatus(false, output);
+					System.out.println("Can't connect."); // TODO: Remove.
+					return null; // Request failed.
+				}
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return sock;
+			return null; // Request failed.
+		}		
+		return streams;
 	}
 	
 	/**
-	 * Checks that a user with the screen name received from the given socket 
-	 * isn't already connected to the server, that it isn't already in the
-	 * users list. If the name is not in use add the name to the users list
-	 * and return true.
+	 * Returns the object streams stored in an array. The first element
+	 * is the output stream, the second element is the input stream.
 	 * 
-	 * @param sock A given socket from which to receive a screen name.
-	 * @return True if the name from socket is already in use, false otherwise.
+	 * @return The object streams stored in an array, null if streams couldn't be fetched.  
 	 */
-	private boolean nameInUse(ObjectInputStream input) {
-		boolean nameInUse = false; // Name already in use.
+	private Object[] getStreams(Socket sock) {
+		Object[] streams = new Object[2]; // The array in which the streams will be stored. 
+		
+		// Streams
+		ObjectOutputStream output;
+		ObjectInputStream input;
 		
 		try {
-			String name = (String) input.readObject();
-			System.out.println("Name request from client: " + name);
+			output = new ObjectOutputStream(sock.getOutputStream()); // Get the output stream.
+			input = new ObjectInputStream(sock.getInputStream()); // Get the input stream.
+			
+			// Add the streams to the array.
+			streams[0] = output;
+			streams[1] = input;
+			
+			return streams;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	/**
+	 * Checks that a user with the screen name received from the given input
+	 * stream isn't already connected to the server, that it isn't already 
+	 * in the users list. If the name is not in use add the name to the users 
+	 * list and return true.
+	 * 
+	 * @param inputStream The given input stream from which to read.
+	 * @return True if the name from inputStream is already in use, false otherwise.
+	 * 
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	private boolean nameInUse(ObjectInputStream inputStream) {
+		ObjectInputStream input = inputStream; 
+		boolean nameInUse = false; // Name already in use.
+		
+		String name;
+		try {
+			name = (String) input.readObject();
+			System.out.println("Name request from client: " + name); // TODO: Remove.
 			
 			if (users.contains(name)) {
 				nameInUse = true;
-				System.out.println("Already in use. Can't connect.");
+				System.out.println("Already in use. Can't connect."); // TODO: Remove.
 			} else {
 				nameInUse = false;
 				users.add(name);
-				System.out.println("Not in use. Good to connect!");
+				System.out.println("Not in use. Good to connect!"); // TODO: Remove.
 			}
-		} catch (Exception e) {
+		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // The name received from input.
 		return nameInUse;
 	}
 
 	/**
-	 * Send the given boolean value to the given socket, in order to tell the client
+	 * Send the given boolean value to the given OutputStream, in order to tell the client
 	 * whether it has been connected to the server.
 	 * 
 	 * @param connected true if client on sock has been connected to the server, false otherwise.
-	 * @param sock The socket from which a connection request was received.
+	 * @param outputStream The OutputStream on which to write.
 	 */
-	private void sendConnectionStatus(boolean connected, ObjectOutputStream output) {
+	private void sendConnectionStatus(boolean connected, ObjectOutputStream outputStream) {
 		try {
+			ObjectOutputStream output = outputStream;
 			output.writeObject(connected);
 			output.flush();
-			output.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -168,12 +219,12 @@ public class Server2 {
 	 * Creates an instance of ChatService, which handles he communication
 	 * between the server and the clients, in a new thread.
 	 * 
-	 * @param The socket from which to read input from client.
+	 * @param The streams over which to communicate.
 	 */
-	private void communicate(Socket sock) {
+	private void communicate(ObjectInputStream input) {
 		try {
 			// Communicate with client in a new thread.
-			ChatService chat = new ChatService(sock); 
+			ChatService chat = new ChatService(input); 
 			Thread communicate = new Thread(chat);
 			communicate.start();
 		} catch (Exception e) {
@@ -189,7 +240,7 @@ public class Server2 {
 	 * removed from the users list. This is to insure that all 
 	 * clients know which users are connected to the chat room.
 	 * 
-	 * TODO: Does this work? Make a call to it somewhere!
+	 * TODO: REMAKE AND EXECUTE SOMEWHERE!
 	 */
 	private void updateUsers() {
 		for (Socket client : clients) {
@@ -198,7 +249,6 @@ public class Server2 {
 				ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 				output.writeObject(users);
 				output.flush();
-				output.close();					
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -209,7 +259,7 @@ public class Server2 {
 	/**
 	 * The ChatService class provides the service of handling the
 	 * communication between a server and its clients as part of 
-	 * a server-client chat system. The socket from which the input
+	 * a server-client chat system. The stream from which the input
 	 * is read is passed in as a parameter in the constructor of 
 	 * this class (as a new ChatService instance is initiated).
 	 * 
@@ -218,38 +268,33 @@ public class Server2 {
 	 */
 	private class ChatService implements Runnable {
 		
-		Socket sock; // The socket from which to read input.
+		ObjectInputStream input; // The input stream from which to read input.
 		
 		/**
 		 * Creates a new ChatService that handles the communication
 		 * between a server and its clients.
 		 * 
-		 * @param A given socket from which to read input.
+		 * @param A given input stream from which to read input.
 		 */
-		public ChatService(Socket sock) {
-			this.sock = sock;
+		public ChatService(ObjectInputStream input) {
+			this.input = input;
 		}
 		
 		/**
-		 * Receives messages from the socket, sock, and echoes the messages 
-		 * to all clients connected to the server TODO: Which server?.  
+		 * Receives messages from the input stream and echoes the messages 
+		 * to all clients connected to the server.  
 		 */
 		public void run() {
 			while (true) {
-				// If socket has been closed and disconnected from the server.
-				if (sock.isClosed()) {
-					removeSock(sock); 
-					break;
-				}
-				
+				/* TODO:
+				 * Check if socket has been closed and disconnected from the server.
+				 */
+							
 				try {
-					// Read the client input from the socket to ObjectInputStream.
-					ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
 					// OBS! The client can only send string messages to server! This may be changed for future versions.
 					String message = (String) input.readObject(); // The message read from socket.
 					System.out.println("Received message: " + message);
-					echoMessage(message); // Echoes the message to all clients connected to the server.
-					input.close();
+					echoMessage(message); // Echoes the message to all clients connected to the server.`
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -281,14 +326,12 @@ public class Server2 {
 		 * @param message The message to be echoed.
 		 */
 		private void echoMessage(String message) {
-			for (Socket client : clients) {
+			for (ObjectOutputStream output : outStreams) {
 				// Send message on client.
 				try {
-					ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 					output.writeObject(message);
 					System.out.println("Sent message: " + message);
 					output.flush();
-					output.close();					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -297,3 +340,5 @@ public class Server2 {
 		}
 	}
 }
+
+// Something
