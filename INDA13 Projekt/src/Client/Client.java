@@ -47,11 +47,11 @@ public class Client {
 			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
 			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
 			System.out.println("socket recieved");
-			inFromServer = new ObjectInputStream(socket.getInputStream());				//Create a inputstream
-			System.out.println("input okej");
+			InputStream input = socket.getInputStream();
+			inFromServer = new ObjectInputStream(input);				//Create a inputstream
 			outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
 			running = true;
-			System.out.println("opened");
+			System.out.println("Connetions open");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -81,9 +81,8 @@ public class Client {
 
 		boolean verify = false;
 		try {
-			System.out.println("Socket is open?: " +socket.isConnected());
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
-			System.out.println(verify);
+			System.out.println("Verify name: " + verify);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
