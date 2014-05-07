@@ -24,8 +24,6 @@ public class Server {
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
 	private static boolean serverFull; // If users.size() == LIMIT.
-
-
 	
 	/**
 	 * Set up a server. Listen for connection requests to the server on the port,
@@ -93,7 +91,6 @@ public class Server {
 		Object[] streams; // The streams of the socket.
 		
 		try {
-<<<<<<< HEAD
 			sock = servSock.accept(); 
 			streams = getStreams(sock); 
 			
@@ -116,26 +113,6 @@ public class Server {
 					sock = null;
 					System.out.println("Can't connect."); // TODO: Remove.
 				}
-=======
-			sock = servSock.accept();
-			
-			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
-			ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
-			
-			if (!serverFull && !nameInUse(input)) {
-				clients.add(sock); // Add the connection socket to clients.
-
-				// If the server limit has been reached, the server is full. 
-				if (users.size() == LIMIT)
-					serverFull = true;
-				sendConnectionStatus(true, output);
-				System.out.println("Good to go!");
-			} else {
-				// Client is not connected to server.
-				sendConnectionStatus(false, output);
-				sock = null;
-				System.out.println("Can't connect.");
->>>>>>> e35dd33dff620d6940c3e6ed930fc7a41d3b55bb
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -151,7 +128,6 @@ public class Server {
 	 * 
 	 * @return The object streams stored in an array, null if streams couldn't be fetched.  
 	 */
-<<<<<<< HEAD
 	private Object[] getStreams(Socket sock) {
 		Object[] streams = new Object[2]; // The array in which the streams will be stored. 
 		
@@ -187,20 +163,12 @@ public class Server {
 	 */
 	private boolean nameInUse(ObjectInputStream inputStream) {
 		ObjectInputStream input = inputStream; 
-=======
-	private boolean nameInUse(ObjectInputStream input) {
->>>>>>> e35dd33dff620d6940c3e6ed930fc7a41d3b55bb
 		boolean nameInUse = false; // Name already in use.
 		
 		String name;
 		try {
-<<<<<<< HEAD
 			name = (String) input.readObject();
 			System.out.println("Name request from client: " + name); // TODO: Remove.
-=======
-			String name = (String) input.readObject();
-			System.out.println("Name request from client: " + name);
->>>>>>> e35dd33dff620d6940c3e6ed930fc7a41d3b55bb
 			
 			if (users.contains(name)) {
 				nameInUse = true;
@@ -227,14 +195,9 @@ public class Server {
 	 * @param connected true if client on sock has been connected to the server, false otherwise.
 	 * @param outputStream The OutputStream on which to write.
 	 */
-<<<<<<< HEAD
 	private void sendConnectionStatus(boolean connected, ObjectOutputStream outputStream) {
 		try {
 			ObjectOutputStream output = outputStream;
-=======
-	private void sendConnectionStatus(boolean connected, ObjectOutputStream output) {
-		try {
->>>>>>> e35dd33dff620d6940c3e6ed930fc7a41d3b55bb
 			output.writeObject(connected);
 			output.flush();
 			output.close();

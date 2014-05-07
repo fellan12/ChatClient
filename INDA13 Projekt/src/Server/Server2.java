@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * @author Richard Sjöberg
  * @version 2014-05-06
  */
-public class Server {
+public class Server2 {
 
 	private ServerSocket servSock; // TODO: 
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections.
