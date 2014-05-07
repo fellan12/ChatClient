@@ -24,8 +24,6 @@ public class Client {
 	private ObjectInputStream inFromServer = null;
 	private ObjectOutputStream outToServer = null;
 
-
-
 	private boolean running;
 
 	public Client(String ip, int port){
