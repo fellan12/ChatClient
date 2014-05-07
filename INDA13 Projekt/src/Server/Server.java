@@ -23,6 +23,8 @@ public class Server {
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
 	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
 	private static boolean serverFull; // If users.size() == LIMIT.
+
+
 	
 	/**
 	 * Set up a server. Listen for connection requests to the server on the port,
@@ -85,19 +87,22 @@ public class Server {
 		Socket sock = null; // The socket over which to communicate.
 		
 		try {
-			sock = servSock.accept(); 
+			sock = servSock.accept();
 			
-			if (!serverFull && !nameInUse(sock)) {
+			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
+			ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
+			
+			if (!serverFull && !nameInUse(input)) {
 				clients.add(sock); // Add the connection socket to clients.
 
 				// If the server limit has been reached, the server is full. 
 				if (users.size() == LIMIT)
 					serverFull = true;
-				sendConnectionStatus(true, sock);
+				sendConnectionStatus(true, output);
 				System.out.println("Good to go!");
 			} else {
 				// Client is not connected to server.
-				sendConnectionStatus(false, sock);
+				sendConnectionStatus(false, output);
 				sock = null;
 				System.out.println("Can't connect.");
 			}
@@ -117,12 +122,10 @@ public class Server {
 	 * @param sock A given socket from which to receive a screen name.
 	 * @return True if the name from socket is already in use, false otherwise.
 	 */
-	private boolean nameInUse(Socket sock) {
-		ObjectInputStream input;
+	private boolean nameInUse(ObjectInputStream input) {
 		boolean nameInUse = false; // Name already in use.
 		
 		try {
-			input = new ObjectInputStream(sock.getInputStream());
 			String name = (String) input.readObject();
 			System.out.println("Name request from client: " + name);
 			
@@ -148,10 +151,8 @@ public class Server {
 	 * @param connected true if client on sock has been connected to the server, false otherwise.
 	 * @param sock The socket from which a connection request was received.
 	 */
-	private void sendConnectionStatus(boolean connected, Socket sock) {
+	private void sendConnectionStatus(boolean connected, ObjectOutputStream output) {
 		try {
-			ObjectOutputStream output = new ObjectOutputStream(sock.getOutputStream());
-			System.out.println("socket is open?: " + sock.isConnected());
 			output.writeObject(connected);
 			output.flush();
 			output.close();

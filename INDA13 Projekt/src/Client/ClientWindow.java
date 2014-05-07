@@ -53,14 +53,11 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 		client = new Client(ip, port);										//Create a Client Object
 
-		boolean connect = client.openConnection(ip, port);					//Connect to server
+		boolean connect = client.isConnectionOpen();					//Connect to server
 		if(!connect){
 			System.err.println("Connection failed!");
 		}else{
 			define();
-//			printToScreen(name + " is connected on " + ip + ":" + port);
-			String connecting = name + " has connected from " + ip + ":" + port; 
-			client.send(connecting);
 			client.receive();
 		}
 	}
