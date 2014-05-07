@@ -38,8 +38,8 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			inet_ip = InetAddress.getByName(ip);							//Make String ip to Inet-address ip
-			socket = new Socket(inet_ip, port);								//Make a socket connection to ip and port
+			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
+			socket = new Socket(inet_ip, port);											//Make a socket connection to ip and port
 			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,22 +66,15 @@ public class Client {
 	 */
 	public boolean verifyConnection(String userName){
 		
-		send(userName);															//Send name to server for verify
+		send(userName);																	//Send name to server for verify
 		
 		ObjectInputStream inFromServer = null;
-		String verifyMessage = null;
 		boolean verify = false;
 		try {
-			inFromServer = new ObjectInputStream(socket.getInputStream());	//Wait for response
-			verifyMessage = (String) inFromServer.readObject();				//Put message from stream to string
+			inFromServer = new ObjectInputStream(socket.getInputStream());				//Create a inputstream
+			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		if(verifyMessage.equals("true")){									//if the message was true then the name is taken
-			verify = false;
-		}else if(verifyMessage.equals("false")){							//if the message was false then the name is not taken
-			verify = true;
 		}
 		return verify;
 	}
@@ -99,21 +92,21 @@ public class Client {
 				try {
 					ObjectInputStream inFromServer = null;
 					while(running){
-						inFromServer = new ObjectInputStream(socket.getInputStream());	//make a inputStream
-						String message = (String) inFromServer.readObject();			//Put message from stream to string
+						inFromServer = new ObjectInputStream(socket.getInputStream());	//Create a inputstream
+						String message = (String) inFromServer.readObject();			//wait to put message from stream to string
 
 						if(!message.equals("")){
 							window.receive(message);									//Send message to ClientWindow
 						}
 					}
-					inFromServer.close();											//Close input Stream
+					inFromServer.close();												//Close input Stream
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
 				}
 				
 			}
 		};	
-		recieveThread.start();														//Start the thread
+		recieveThread.start();															//Start the thread
 	}
 
 	/**
@@ -121,19 +114,19 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send-Thread"){										//Thread
+		sendThread = new Thread("Send-Thread"){											//Thread
 			public void run(){
 				try {
-					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Make a OutputStream
-					outToServer.writeObject(message);								//send message through the stream
-					outToServer.close();											//Close the stream
+					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
+					outToServer.writeObject(message);									//send message through the stream
+					outToServer.flush();
 				} catch (IOException e) {		
 					e.printStackTrace();
 				}
 				
 			}
 		};
-		sendThread.start();															//Start the thread
+		sendThread.start();																//Start the thread
 	}
 
 }
