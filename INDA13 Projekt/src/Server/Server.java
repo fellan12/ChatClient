@@ -184,6 +184,7 @@ public class Server {
 			try {
 				ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 				output.writeObject(users);
+				output.flush();
 				output.close();					
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
