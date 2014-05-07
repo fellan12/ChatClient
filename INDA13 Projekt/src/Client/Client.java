@@ -24,6 +24,8 @@ public class Client {
 	private ObjectOutputStream outToServer = null;
 
 	private boolean running;
+	
+	private String name;
 
 	public Client(String ip, int port){
 		openConnection(ip, port);
@@ -53,6 +55,10 @@ public class Client {
 		}
 		return true;
 	}
+	
+	public String getName(){
+		return name;
+	}
 
 	/**
 	 * Checks if the socked is connected to the server
@@ -71,7 +77,7 @@ public class Client {
 	 * @return
 	 */
 	public boolean verifyConnection(String userName){
-
+		name = userName;
 		send(userName);																	//Send name to server for verify
 
 		boolean verify = false;
@@ -92,7 +98,7 @@ public class Client {
 	 */
 	public void receive() {
 		System.out.println("Recieve started");
-		final ClientWindow window = new ClientWindow(); 
+		final ClientWindow window = new ClientWindow(this); 
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {

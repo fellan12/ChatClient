@@ -1,19 +1,11 @@
 package Client;
-import java.awt.EventQueue;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.DefaultCaret;
+import javax.swing.border.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+
 
 /**
  * ClientWindow class that handles the Screen
@@ -21,6 +13,7 @@ import java.net.UnknownHostException;
  * 
  * @author Felix De Silva
  */
+@SuppressWarnings("serial")
 public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 	private JPanel panel;
@@ -32,21 +25,12 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private Client client;
 
 	/**
-	 * Constructor 1 for ClientWindow
+	 * Constructor for ClientWindow
 	 */
-	public ClientWindow(){
-		define();
-	}
-
-	/**
-	 * Constructor 2 for ClientWindow
-	 */
-	public ClientWindow(String name, Client client) {
-		this.name = name;
+	public ClientWindow(Client client){
 		this.client = client;
-
+		this.name = client.getName();
 		define();
-		client.receive();
 	}
 
 	/**

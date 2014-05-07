@@ -94,7 +94,7 @@ public class LoginWindow extends JFrame {
 				System.out.println("click");
 				Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
 				if(LoginCheck(client)){
-					login(client);
+					startRecieve(client);
 				}else{
 					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
@@ -127,10 +127,9 @@ public class LoginWindow extends JFrame {
 	 * @param ip - the Ip-address to the server
 	 * @param port - the port to the server.
 	 */
-	public void login(Client client){
+	public void startRecieve(Client client){
 		dispose();
-		String name = textName.getText();
-		new ClientWindow(name, client);
+		client.receive();
 	}
 
 
