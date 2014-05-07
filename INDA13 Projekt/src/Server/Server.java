@@ -241,6 +241,7 @@ public class Server {
 					ObjectInputStream input = new ObjectInputStream(sock.getInputStream());
 					// OBS! The client can only send string messages to server! This may be changed for future versions.
 					String message = (String) input.readObject(); // The message read from socket.
+					System.out.println("Received message: " + message);
 					echoMessage(message); // Echoes the message to all clients connected to the server.
 					input.close();
 				} catch (Exception e) {
@@ -259,9 +260,9 @@ public class Server {
 		 * @param sock The socket to be removed.
 		 */
 		private void removeSock(Socket sock) {
-			for (int i = 0; i < Server.clients.size(); i++) {
-				if (Server.clients.get(i) == sock) {
-					Server.clients.remove(i);
+			for (int i = 0; i < clients.size(); i++) {
+				if (clients.get(i) == sock) {
+					clients.remove(i);
 				}
 			}
 			// TODO: Update users. Echo the users list to all connected clients.
@@ -279,6 +280,7 @@ public class Server {
 				try {
 					ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 					output.writeObject(message);
+					System.out.println("Sent message: " + message);
 					output.flush();
 					output.close();					
 				} catch (IOException e) {
