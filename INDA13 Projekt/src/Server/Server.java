@@ -66,6 +66,7 @@ public class Server {
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
+		users.add("albin");
 
 		try {
 			servSock = new ServerSocket(port);
@@ -105,8 +106,8 @@ public class Server {
 				sendConnectionStatus(true, sock);
 			} else {
 				// Client is not connected to server.
-				sock = null;
 				sendConnectionStatus(false, sock);
+				sock = null;
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -131,6 +132,7 @@ public class Server {
 		try {
 			input = new ObjectInputStream(sock.getInputStream());
 			String name = (String) input.readObject();
+			System.out.println(name);
 			if (users.contains(name)) {
 				nameInUse = true;
 			} else {

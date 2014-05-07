@@ -73,6 +73,7 @@ public class Client {
 		try {
 			inFromServer = new ObjectInputStream(socket.getInputStream());				//Create a inputstream
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
+			System.out.println(verify);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
