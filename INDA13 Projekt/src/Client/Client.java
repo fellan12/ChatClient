@@ -95,7 +95,7 @@ public class Client {
 					while(running){
 						inFromServer = new ObjectInputStream(socket.getInputStream());	//Create a inputstream
 						String message = (String) inFromServer.readObject();			//wait to put message from stream to string
-
+						System.out.println("Recieve from server: " + message);
 						if(!message.equals("")){
 							window.receive(message);									//Send message to ClientWindow
 						}
@@ -120,6 +120,7 @@ public class Client {
 				try {
 					ObjectOutputStream outToServer = new ObjectOutputStream(socket.getOutputStream());		//Creates a OutputStream
 					outToServer.writeObject(message);									//send message through the stream
+					System.out.println("Write to server: " + message);
 					outToServer.flush();
 				} catch (IOException e) {		
 					e.printStackTrace();
