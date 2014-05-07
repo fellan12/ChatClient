@@ -19,11 +19,12 @@ import java.util.ArrayList;
 public class Server {
 
 	private ServerSocket servSock; // TODO: 
+	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
+	private static boolean serverFull; // If users.size() == LIMIT.
+	
 	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
 	private static ArrayList<ObjectOutputStream> outStreams; // The output streams of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
-	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change.
-	private static boolean serverFull; // If users.size() == LIMIT.
 	
 	/**
 	 * Set up a server. Listen for connection requests to the server on the port,
@@ -45,10 +46,6 @@ public class Server {
 		
 		while (true) {
 			Object[] streams = server.acceptRequest(); // The socket from which to read client input.
-<<<<<<< HEAD
-
-=======
->>>>>>> 1d55812fd26a6fb588a684a830c1396161b79711
 			if (streams != null) { // Client is connected to server.
 				ObjectInputStream input = (ObjectInputStream) streams[1];
 				server.communicate(input); // Communicate with clients.
@@ -70,6 +67,7 @@ public class Server {
 		try {
 			servSock = new ServerSocket(port);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -94,7 +92,6 @@ public class Server {
 		
 		try {
 			sock = servSock.accept();
-			servSock.close();
 			streams = getStreams(sock); 
 			
 			if (streams != null) {
