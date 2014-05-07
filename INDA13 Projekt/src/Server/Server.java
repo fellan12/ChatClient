@@ -45,7 +45,10 @@ public class Server {
 		
 		while (true) {
 			Object[] streams = server.acceptRequest(); // The socket from which to read client input.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1d55812fd26a6fb588a684a830c1396161b79711
 			if (streams != null) { // Client is connected to server.
 				ObjectInputStream input = (ObjectInputStream) streams[1];
 				server.communicate(input); // Communicate with clients.
@@ -90,7 +93,8 @@ public class Server {
 		Object[] streams; // The streams of the socket.
 		
 		try {
-			sock = servSock.accept(); 
+			sock = servSock.accept();
+			servSock.close();
 			streams = getStreams(sock); 
 			
 			if (streams != null) {
