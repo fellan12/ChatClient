@@ -58,7 +58,12 @@ public class Server {
 	public Server(int port) {
 		clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
+<<<<<<< HEAD
 		
+=======
+		users.add("albin");
+
+>>>>>>> a22a6c997cb613d7c50ce6b1c137279d8607e4e5
 		try {
 			servSock = new ServerSocket(port);
 		} catch (IOException e) {
@@ -99,7 +104,10 @@ public class Server {
 				// Client is not connected to server.
 				sendConnectionStatus(false, sock);
 				sock = null;
+<<<<<<< HEAD
 				System.out.println("Can't connect.");
+=======
+>>>>>>> a22a6c997cb613d7c50ce6b1c137279d8607e4e5
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -124,8 +132,12 @@ public class Server {
 		try {
 			input = new ObjectInputStream(sock.getInputStream());
 			String name = (String) input.readObject();
+<<<<<<< HEAD
 			System.out.println("Name request from client: " + name);
 			
+=======
+			System.out.println(name);
+>>>>>>> a22a6c997cb613d7c50ce6b1c137279d8607e4e5
 			if (users.contains(name)) {
 				nameInUse = true;
 				System.out.println("Already in use. Can't connect.");
