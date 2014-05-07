@@ -74,7 +74,6 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		scrollConstrains.gridwidth = 3;
 		scrollConstrains.gridheight = 2;
 		panel.add(scroll, scrollConstrains);
-		System.out.println(textConversation == null);
 
 		//Message Field - TextField
 		txtMessage = new JTextField();
@@ -138,8 +137,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * @param message
 	 */
 	private void printToScreen(String message){
-		System.out.println("in print " + (textConversation == null));
-		textConversation.append(message + "\n");	//<-----nullpointer
+		textConversation.append(message + "\n");
 		textConversation.setCaretPosition(textConversation.getDocument().getLength());					//Sets the caret at the botton
 	}
 
@@ -151,7 +149,6 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public void sendMessage(String message){
 		if(message.length() > 0 ){
 			String text = name + ": " + message;
-			System.out.println("in send " + (textConversation == null));
 			client.send(text);
 			txtMessage.setText("");
 		}
@@ -162,7 +159,6 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * @param output
 	 */
 	public void receive(String fromServer){
-		System.out.println("in recieve " + (textConversation == null));
 		printToScreen(fromServer);
 	}
 }

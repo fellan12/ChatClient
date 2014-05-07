@@ -19,7 +19,7 @@ public class Client {
 	private InetAddress inet_ip;
 
 	private Thread sendThread, recieveThread;
-	
+		
 	private ObjectInputStream inFromServer = null;
 	private ObjectOutputStream outToServer = null;
 
@@ -40,15 +40,12 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			System.out.println("Trying to open connection");
 			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
 			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
-			System.out.println("socket recieved");
 			InputStream input = socket.getInputStream();
 			inFromServer = new ObjectInputStream(input);							//Create a inputstream
 			outToServer = new ObjectOutputStream(socket.getOutputStream());			//Creates a OutputStream
 			running = true;
-			System.out.println("Connetions open");
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -56,6 +53,11 @@ public class Client {
 		return true;
 	}
 	
+	/**
+	 * Get the name of the user
+	 * 
+	 * @return name - the name of the user
+	 */
 	public String getName(){
 		return name;
 	}
@@ -83,7 +85,6 @@ public class Client {
 		boolean verify = false;
 		try {
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
-			System.out.println("Verify name: " + verify);
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +98,6 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void receive() {
-		System.out.println("Recieve started");
 		final ClientWindow window = new ClientWindow(this); 
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
@@ -123,7 +123,6 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		System.out.println("Send started");
 		sendThread = new Thread("Send-Thread"){
 			public void run(){
 				try {

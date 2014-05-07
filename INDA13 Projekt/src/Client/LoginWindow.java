@@ -20,6 +20,8 @@ public class LoginWindow extends JFrame {
 	private JTextField textIp;
 	private JTextField textName;
 	private JTextField textPort;
+	
+	private Client client;
 
 	/**
 	 * Constructor for LoginWindow
@@ -91,11 +93,12 @@ public class LoginWindow extends JFrame {
 		btnNewButton.setBounds(130, 347, 100, 30);
 		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("click");
-				Client client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
+				client = new Client(textIp.getText(),Integer.parseInt(textPort.getText()));
 				if(LoginCheck(client)){
-					startRecieve(client);
+					dispose();
+					client.receive();
 				}else{
+					client = null;
 					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
 			}
@@ -117,21 +120,6 @@ public class LoginWindow extends JFrame {
 		}
 		return connect;
 	}
-
-	/**
-	 * Log in sequence
-	 * 
-	 * Logging in to the server.
-	 * 
-	 * @param name - the name of the user
-	 * @param ip - the Ip-address to the server
-	 * @param port - the port to the server.
-	 */
-	public void startRecieve(Client client){
-		dispose();
-		client.receive();
-	}
-
 
 	/**
 	 * Launch the application.
