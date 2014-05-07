@@ -58,7 +58,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 			System.err.println("Connection failed!");
 		}else{
 			define();
-			printToScreen(name + " is connected on " + ip + ":" + port);
+//			printToScreen(name + " is connected on " + ip + ":" + port);
 			String connecting = name + " has connected from " + ip + ":" + port; 
 			client.send(connecting);
 			client.receive();

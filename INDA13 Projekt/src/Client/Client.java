@@ -122,6 +122,7 @@ public class Client {
 					outToServer.writeObject(message);									//send message through the stream
 					System.out.println("Write to server: " + message);
 					outToServer.flush();
+					outToServer.close();
 				} catch (IOException e) {		
 					e.printStackTrace();
 				}
