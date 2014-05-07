@@ -42,10 +42,9 @@ public class Server {
 		
 		// Create a server that listens for connection requests on port.
 		Server server = new Server(port);
+		Object[] streams = server.acceptRequest(); // The socket from which to read client input.
 		
 		while (true) {
-			Object[] streams = server.acceptRequest(); // The socket from which to read client input.
-			
 			if (streams != null) { // Client is connected to server.
 				ObjectInputStream input = (ObjectInputStream) streams[1];
 				server.communicate(input); // Communicate with clients.
