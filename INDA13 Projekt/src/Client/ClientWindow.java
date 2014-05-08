@@ -22,7 +22,7 @@ import java.util.Date;
  * @author Felix De Silva
  */
 @SuppressWarnings("serial")
-public class ClientWindow extends JFrame implements ClientWindowInterface {
+public class ClientWindow extends JFrame{
 
 	private JPanel panel;
 	private String name;
