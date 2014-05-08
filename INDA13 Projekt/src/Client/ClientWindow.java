@@ -165,8 +165,8 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * @param message
 	 */
 	private void printToScreen(String message){
-		onlineList.append(message + "\n");
-		onlineList.setCaretPosition(onlineList.getDocument().getLength());					//Sets the caret at the botton
+		textConveration.append(message + "\n");
+		textConveration.setCaretPosition(onlineList.getDocument().getLength());					//Sets the caret at the botton
 	}
 
 	/**
