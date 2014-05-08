@@ -120,7 +120,8 @@ public class Server {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
+		updateUsers();
 	}
 	
 	/**
@@ -150,6 +151,7 @@ public class Server {
 			e.printStackTrace();
 			return null;
 		}
+
 	}
 	
 	/**

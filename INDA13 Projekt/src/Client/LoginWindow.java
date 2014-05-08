@@ -20,7 +20,7 @@ public class LoginWindow extends JFrame {
 	private JTextField textIp;
 	private JTextField textName;
 	private JTextField textPort;
-	
+
 	private Client client;
 
 	/**
@@ -48,7 +48,7 @@ public class LoginWindow extends JFrame {
 		setResizable(false);
 		setTitle("InstaChat");
 		setSize(366, 531);
-		
+
 		//Panel
 		panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5,5,5,5));
@@ -99,7 +99,6 @@ public class LoginWindow extends JFrame {
 					client.receive();
 				}else{
 					client = null;
-					JOptionPane.showMessageDialog(null, "Invalid Input");
 				}
 			}
 		});
@@ -114,8 +113,12 @@ public class LoginWindow extends JFrame {
 	public boolean LoginCheck(Client client){
 		boolean connect = false;
 		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
-			if(client.verifyConnection(textName.getText()) && client.isConnectionOpen()){
-				connect = true;
+			if(client.verifyConnection(textName.getText())){
+				if(client.isConnectionOpen()){
+					connect = true;
+				}
+			}else{
+				JOptionPane.showMessageDialog(null, "Username is unavailable");
 			}
 		}
 		return connect;
