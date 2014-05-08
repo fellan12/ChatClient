@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -103,10 +104,14 @@ public class Client {
 			public void run(){
 				try {
 					while(running){
-						Object message = (String) inFromServer.readObject();			//wait to put message from stream to string
+						Object message = inFromServer.readObject();			//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
-						if(!message.equals("")){
+						if(message instanceof String && !message.equals("")){
 							window.receive((String) message);									//Send message to ClientWindow
+						}
+						if(message instanceof ArrayList){
+							ArrayList<String> users = (ArrayList<String>) message;
+							updateOnlinelist(users);
 						}
 						
 					}
@@ -114,6 +119,12 @@ public class Client {
 					e.printStackTrace();
 				}
 
+			}
+
+			private void updateOnlinelist(ArrayList<String> users) {
+				if(users.size() > 0){
+					window.refreshOnlineUserList(users);
+				}
 			}
 		};	
 		recieveThread.start();															//Start the thread

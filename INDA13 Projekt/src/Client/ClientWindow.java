@@ -9,6 +9,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -25,6 +29,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
 	private JTextArea textConveration;
+	private ArrayList<String> onlineUsers;
 
 	private Client client;
 	private JTextArea onlineList;
@@ -35,6 +40,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public ClientWindow(Client client){
 		this.client = client;
 		this.name = client.getName();
+		onlineUsers = new ArrayList<String>();
 		define();
 	}
 
@@ -79,7 +85,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		scrollConstrains.weightx = 1;
 		scrollConstrains.weighty = 1;
 		panel.add(scroll, scrollConstrains);
-		
+
 		//On Screen OnlineList - TextArea/JScrollPane
 		onlineList = new JTextArea();
 		onlineList.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -145,6 +151,11 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 		//MenuItem - Open
 		JMenuItem menuItemOpen = new JMenuItem("Save");
+		menuItemOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				save();
+			}
+		});
 		fileMenu.add(menuItemOpen);
 
 		//MenuItem - Exit
@@ -170,12 +181,24 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	}
 
 	/**
+	 * Refresh OnlineUserList
+	 */
+	public void refreshOnlineUserList(ArrayList<String> users){
+		for(String name : users){
+			if(!onlineUsers.contains(name)){
+				onlineList.append(name + "\n");
+				onlineUsers.add(name);
+			}
+		}
+	}
+
+	/**
 	 * send to the server
 	 * 
 	 * @param message
 	 */
 	public void sendMessage(String message){
-		if(message.length() > 0 ){
+		if(message.length() > 0){
 			String text = name + ": " + message;
 			client.send(text);
 			txtMessage.setText("");
@@ -189,16 +212,23 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	public void receive(String fromServer){
 		printToScreen(fromServer);
 	}
-	
+
+	/**
+	 * Saves the current textConversation to a txt-file on the same location as the application.
+	 */
 	public void save(){
 		try {
-			BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation"));
+			DateFormat dateformat = new SimpleDateFormat("HH-mm-ss_dd-MM-yy");
+			Date currentDate = new Date();
+
+			BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation_ " + dateformat.format(currentDate) + ".txt"));
 			saveFile.write(textConveration.getText());
 			saveFile.close();
+			JOptionPane.showMessageDialog(null, "Saved Conversation");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }
 
