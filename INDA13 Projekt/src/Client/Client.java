@@ -137,4 +137,20 @@ public class Client {
 		};
 		sendThread.start();
 	}
+	
+	/**
+	 * Disconnect from server
+	 * 
+	 * when you use the Exit button in the file-menubar
+	 */
+	public void disconnect(){
+		try {
+			inFromServer.close();
+			outToServer.close();
+			socket.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+	}
 }	
