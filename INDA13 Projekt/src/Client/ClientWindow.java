@@ -67,11 +67,11 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		textConversation.setEditable(false);
 		JScrollPane scroll = new JScrollPane(textConversation);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
-		scrollConstrains.insets = new Insets(0, 12, 5, 5);
+		scrollConstrains.insets = new Insets(0, 12, 5, 100);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
 		scrollConstrains.gridx = 0;
 		scrollConstrains.gridy = 0;
-		scrollConstrains.gridwidth = 3;
+		scrollConstrains.gridwidth = 2;
 		scrollConstrains.gridheight = 2;
 		panel.add(scroll, scrollConstrains);
 

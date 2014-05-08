@@ -103,11 +103,12 @@ public class Client {
 			public void run(){
 				try {
 					while(running){
-						String message = (String) inFromServer.readObject();			//wait to put message from stream to string
+						Object message = (String) inFromServer.readObject();			//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
 						if(!message.equals("")){
-							window.receive(message);									//Send message to ClientWindow
+							window.receive((String) message);									//Send message to ClientWindow
 						}
+						
 					}
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
