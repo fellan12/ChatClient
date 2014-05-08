@@ -27,6 +27,9 @@ public class Client {
 	private boolean running;
 
 	private String name;
+	
+	private ClientWindow window;
+
 
 	public Client(String ip, int port){
 		openConnection(ip, port);
@@ -99,7 +102,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void receive() {
-		final ClientWindow window = new ClientWindow(this); 
+		window = new ClientWindow(this); 
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {
@@ -118,7 +121,7 @@ public class Client {
 
 					}
 				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
+					e.getStackTrace();
 				}
 
 			}

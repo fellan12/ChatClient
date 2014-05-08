@@ -268,6 +268,7 @@ public class Server {
 		ObjectInputStream input; // The input stream from which to read input.
 		ObjectOutputStream output; // The output stream of this client-server connection's socket.
 		String name; // The name of the user of this connection.
+		int updateTick;
 		
 		/**
 		 * Creates a new ChatService that handles the communication
