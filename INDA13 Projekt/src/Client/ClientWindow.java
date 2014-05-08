@@ -66,7 +66,7 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 
 		//Layout -GridBagLayout
 		GridBagLayout layout = new GridBagLayout();
-		layout.columnWidths = new int[]{40, 810, 150};						//sum = 1000
+		layout.columnWidths = new int[]{45, 805, 150};						//sum = 1000
 		layout.rowHeights = new int[]{75, 660, 55};								//sum = 800
 		panel.setLayout(layout);
 
@@ -92,14 +92,14 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		onlineList.setEditable(false);
 		JScrollPane scrollOnlie = new JScrollPane(onlineList);
 		GridBagConstraints scrollOnlineConstrains = new GridBagConstraints();
-		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 5);
+		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 0);
 		scrollOnlineConstrains.fill = GridBagConstraints.BOTH;
 		scrollOnlineConstrains.gridx = 2;
 		scrollOnlineConstrains.gridy = 0;
 		scrollOnlineConstrains.gridwidth = 2;
 		scrollOnlineConstrains.gridheight = 2;
-		scrollOnlineConstrains.weightx = 1;
-		scrollOnlineConstrains.weighty = 1;
+		scrollOnlineConstrains.weightx = 0;
+		scrollOnlineConstrains.weighty = 0;
 		panel.add(scrollOnlie, scrollOnlineConstrains);
 
 		//Message Field - TextField
@@ -177,18 +177,28 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 */
 	private void printToScreen(String message){
 		textConveration.append(message + "\n");
-		textConveration.setCaretPosition(onlineList.getDocument().getLength());					//Sets the caret at the botton
+		textConveration.setCaretPosition(textConveration.getDocument().getLength());					//Sets the caret at the botton
 	}
 
 	/**
-	 * Refresh OnlineUserList
+	 * Update OnlineUserList
 	 */
-	public void refreshOnlineUserList(ArrayList<String> users){
+	public void updateOnlineUserList(ArrayList<String> users){
 		for(String name : users){
 			if(!onlineUsers.contains(name)){
 				onlineList.append(name + "\n");
 				onlineUsers.add(name);
 			}
+		}
+	}
+
+	/**
+	 * Refresh OnlineUserList
+	 */
+	public void refreshOnlineUserList(){
+		onlineList.setText("");
+		for(String name : onlineUsers){
+			onlineList.append(name + "\n");
 		}
 	}
 

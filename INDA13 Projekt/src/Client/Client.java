@@ -20,12 +20,12 @@ public class Client {
 	private InetAddress inet_ip;
 
 	private Thread sendThread, recieveThread;
-		
+
 	private ObjectInputStream inFromServer = null;
 	private ObjectOutputStream outToServer = null;
 
 	private boolean running;
-	
+
 	private String name;
 
 	public Client(String ip, int port){
@@ -53,7 +53,7 @@ public class Client {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Get the name of the user
 	 * 
@@ -115,6 +115,7 @@ public class Client {
 							updateOnlinelist(users);
 						}
 						
+
 					}
 				} catch (IOException | ClassNotFoundException e) {
 					e.printStackTrace();
@@ -124,7 +125,7 @@ public class Client {
 
 			private void updateOnlinelist(ArrayList<String> users) {
 				if(users.size() > 0){
-					window.refreshOnlineUserList(users);
+					window.updateOnlineUserList(users);
 				}
 			}
 		};	
@@ -149,7 +150,7 @@ public class Client {
 		};
 		sendThread.start();
 	}
-	
+
 	/**
 	 * Disconnect from server
 	 * 
@@ -163,6 +164,6 @@ public class Client {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
+
 	}
 }	

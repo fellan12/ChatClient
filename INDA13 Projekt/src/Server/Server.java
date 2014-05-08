@@ -323,7 +323,7 @@ public class Server {
 				input.close();
 				output.close();
 				sock.close();
-				
+
 				clients.remove(sock);
 				outStreams.remove(output);
 				users.remove(name);
