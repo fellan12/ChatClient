@@ -30,13 +30,15 @@ public class Server {
 	 * If the server is successfully set up, call the acceptRequests
 	 * method, that handles all connection requests to the server and
 	 * the communication between the connected clients.
-	 * 
-	 * TODO: Create a GUI for the server.
 	 * 		
 	 * @param args Ignore.
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
+		
+		//ServerWindow serverGUI = new ServerWindow();
+				
+		
 		int port = 1234; // TODO: Start GUI. Get port from user. 
 		
 		// Create a server that listens for connection requests on port.
@@ -70,7 +72,7 @@ public class Server {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			isRunning = false; // TODO: Unnecessary?
+			isRunning = false;
 		}
 	}
 	
