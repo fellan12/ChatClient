@@ -169,7 +169,6 @@ public class Server {
 		} else {
 			nameInUse = false;
 			users.add(name);
-			updateUsers();
 			System.out.println("Not in use. Good to connect!"); // TODO: Remove.
 		}
 		return nameInUse;
@@ -245,7 +244,7 @@ public class Server {
 	private void communicate(Object[] streams, Socket sock, String name) {
 		try {
 			// Communicate with client in a new thread.
-			ChatService chat = new ChatService(streams, sock, name); 
+			ChatService chat = new ChatService(streams, sock, name);
 			Thread communicate = new Thread(chat);
 			communicate.start();
 		} catch (Exception e) {
