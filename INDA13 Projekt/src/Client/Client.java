@@ -106,11 +106,12 @@ public class Client {
 					while(running){
 						Object message = inFromServer.readObject();			//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
+						
 						if(message instanceof String && !message.equals("")){
 							window.receive((String) message);									//Send message to ClientWindow
 						}
 						if(message instanceof ArrayList){
-							ArrayList<String> users = (ArrayList<String>) message;
+							ArrayList<String> users = (ArrayList<String>) message;				//Update the onlineUsersList
 							updateOnlinelist(users);
 						}
 						
