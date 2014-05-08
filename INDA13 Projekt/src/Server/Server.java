@@ -11,9 +11,6 @@ import java.util.ArrayList;
  * This is a server that communicates with clients, as part 
  * of a client-server chat system.
  * 
- * TODO: Error handling. Try/catch. Handle exceptions?
- * TODO: Close the sockets (sock + servSock)
- * 
  * @author Richard Sjöberg
  * @version 2014-05-08
  */
@@ -33,6 +30,8 @@ public class Server {
 	 * If the server is successfully set up, call the acceptRequests
 	 * method, that handles all connection requests to the server and
 	 * the communication between the connected clients.
+	 * 
+	 * TODO: Create a GUI for the server.
 	 * 		
 	 * @param args Ignore.
 	 * @throws Exception 
@@ -98,8 +97,9 @@ public class Server {
 			if (streams != null) {
 				ObjectOutputStream output = (ObjectOutputStream) streams[0];
 				ObjectInputStream input = (ObjectInputStream) streams[1];
+				String name = getName(input);
 				
-				if (!serverFull && !nameInUse(input)) {
+				if (!serverFull && !nameInUse(name)) {
 					// TODO: Problem adding/removing from clients and outStreams?
 					clients.add(sock); // Add the connection socket to clients.
 					outStreams.add(output); // Add the output stream of the socket to outStreams.
@@ -110,7 +110,7 @@ public class Server {
 					}
 					sendConnectionStatus(true, output);
 					System.out.println("Good to go!"); // TODO: Remove.
-					communicate(streams, sock); // Communicate with clients.					
+					communicate(streams, sock, name); // Communicate with clients.					
 				} else {
 					// Client is not connected to server.
 					sendConnectionStatus(false, output);
@@ -153,42 +153,45 @@ public class Server {
 	}
 	
 	/**
-	 * Checks that a user with the screen name received from the given input
-	 * stream isn't already connected to the server, that it isn't already 
-	 * in the users list. If the name is not in use add the name to the users 
-	 * list and return true.
+	 * Checks that a user with the given screen name isn't already connected 
+	 * to the server, that it isn't already in the users list. If the name 
+	 * is not in use add the name to the users list and return true.
 	 * 
-	 * @param inputStream The given input stream from which to read.
+	 * @param name The given name.
 	 * @return True if the name from inputStream is already in use, false otherwise.
-	 * 
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
 	 */
-	private boolean nameInUse(ObjectInputStream inputStream) {
-		ObjectInputStream input = inputStream; 
+	private boolean nameInUse(String name) {
 		boolean nameInUse = false; // Name already in use.
 		
-		String name;
+		if (users.contains(name)) {
+			nameInUse = true;
+			System.out.println("Already in use. Can't connect."); // TODO: Remove.
+		} else {
+			nameInUse = false;
+			users.add(name);
+			updateUsers();
+			System.out.println("Not in use. Good to connect!"); // TODO: Remove.
+		}
+		return nameInUse;
+	}
+	
+	/**
+	 * Returns the requested screen name received from the given input stream.
+	 * 
+	 * @return The requested screen name if read successful, null if read failed.
+	 */
+	private String getName(ObjectInputStream input) {
+		String name = null;
+
 		try {
 			name = (String) input.readObject();
 			System.out.println("Name request from client: " + name); // TODO: Remove.
-			
-			if (users.contains(name)) {
-				nameInUse = true;
-				System.out.println("Already in use. Can't connect."); // TODO: Remove.
-			} else {
-				nameInUse = false;
-				users.add(name);
-				System.out.println("Not in use. Good to connect!"); // TODO: Remove.
-			}
-		} catch (ClassNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} // The name received from input.
-		return nameInUse;
+		} 
+		
+		return name;
 	}
 
 	/**
@@ -237,11 +240,12 @@ public class Server {
 	 * 
 	 * @param streams The streams over which to communicate.
 	 * @param sock The socket of this client-server connection.
+	 * @param name The name of the user of this connection.
 	 */
-	private void communicate(Object[] streams, Socket sock) {
+	private void communicate(Object[] streams, Socket sock, String name) {
 		try {
 			// Communicate with client in a new thread.
-			ChatService chat = new ChatService(streams, sock); 
+			ChatService chat = new ChatService(streams, sock, name); 
 			Thread communicate = new Thread(chat);
 			communicate.start();
 		} catch (Exception e) {
@@ -262,6 +266,7 @@ public class Server {
 		Socket sock; // The socket of this client-server connection.
 		ObjectInputStream input; // The input stream from which to read input.
 		ObjectOutputStream output; // The output stream of this client-server connection's socket.
+		String name; // The name of the user of this connection.
 		
 		/**
 		 * Creates a new ChatService that handles the communication
@@ -269,11 +274,13 @@ public class Server {
 		 * 
 		 * @param streams The streams over which to communicate.
 		 * @param sock The socket of this client-server connection.
+		 * @param name The name of the user of this connection.
 		 */
-		public ChatService(Object[] streams, Socket sock) {
+		public ChatService(Object[] streams, Socket sock, String name) {
 			output = (ObjectOutputStream) streams[0];
 			input = (ObjectInputStream) streams[1];
 			this.sock = sock;
+			this.name = name;
 		}
 		
 		/**
@@ -283,6 +290,8 @@ public class Server {
 		 * If the user has disconnected from the server, remove the client
 		 * connection from the server and make sure all connected clients
 		 * are notified.
+		 * 
+		 * TODO: 
 		 */
 		public void run() {
 			while (true) {
@@ -292,8 +301,9 @@ public class Server {
 					System.out.println("Received message: " + message);
 					echoMessage(message); // Echoes the message to all clients connected to the server.`
 				} catch (Exception e) {
-					e.printStackTrace();
-					closeConnection(); 
+					closeConnection();
+					updateUsers();
+					echoMessage(name + " has left the chat room.");
 					break;
 				}
 			} 
@@ -314,34 +324,17 @@ public class Server {
 				
 				clients.remove(sock);
 				outStreams.remove(output);
-				
-				// users.remove(index) TODO: Somehow remove the name.
+				users.remove(name);
 				// Notify clients. Echo the users list typ?
 				// Send a message "user left the chat room"
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		
 		/**
-		 * Removes the given socket from the clients list.
-		 * 
-		 * @param sock The socket to be removed.
-		 */
-		private void removeSock(Socket sock) {
-			for (int i = 0; i < clients.size(); i++) {
-				if (clients.get(i) == sock) {
-					clients.remove(i);
-				}
-			}
-			// TODO: Update users. Echo the users list to all connected clients.
-		}
-		
-		/**
-		 * Sends a given message (of type string) to all clients connected
-		 * to the server.
+		 * Sends a given message to all clients connected to the server.
 		 * 
 		 * @param message The message to be echoed.
 		 */
