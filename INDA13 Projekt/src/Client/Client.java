@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Server.Identifier;
+
 /**
  * Client class that handles the logics for the ClinetWindow
  * 
@@ -27,7 +29,7 @@ public class Client {
 	private boolean running;
 
 	private String name;
-	
+
 	private ClientWindow window;
 
 
@@ -109,15 +111,19 @@ public class Client {
 					while(running){
 						Object message = inFromServer.readObject();			//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
-						
-						if(message instanceof String && !message.equals("")){
-							window.receive((String) message);									//Send message to ClientWindow
-						}
-						if(message instanceof ArrayList){
-							ArrayList<String> users = (ArrayList<String>) message;				//Update the onlineUsersList
+
+						if((message.equals(Identifier.MESSAGE))){
+							String text = (String) inFromServer.readObject();
+							window.receive(text);									//Send message to ClientWindow
+						}else if(message.equals(Identifier.USER)){
+							Object user = inFromServer.readObject();
+							ArrayList<String> users = new ArrayList<>();
+							while(!user.equals(Identifier.NO_MORE_USERS)){
+								users.add((String) user);
+								user = inFromServer.readObject();
+							}
 							updateOnlinelist(users);
 						}
-						
 
 					}
 				} catch (IOException | ClassNotFoundException e) {
@@ -161,6 +167,7 @@ public class Client {
 	 */
 	public void disconnect(){
 		try {
+			System.out.println("closing");
 			inFromServer.close();
 			outToServer.close();
 			socket.close();

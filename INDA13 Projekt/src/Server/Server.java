@@ -226,10 +226,14 @@ public class Server {
 		for (ObjectOutputStream output : outStreams) {
 			// Send the users list on client
 			try {
-				output.writeObject(users);
+				System.out.println(users);
+				output.writeObject(Identifier.USER);
+				for(String name : users){
+					output.writeObject(name);
+				}
+				output.writeObject(Identifier.NO_MORE_USERS);
 				output.flush();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -268,7 +272,7 @@ public class Server {
 		ObjectInputStream input; // The input stream from which to read input.
 		ObjectOutputStream output; // The output stream of this client-server connection's socket.
 		String name; // The name of the user of this connection.
-		int updateTick;
+		
 		
 		/**
 		 * Creates a new ChatService that handles the communication
@@ -344,6 +348,7 @@ public class Server {
 			for (ObjectOutputStream output : outStreams) {
 				// Send message on client.
 				try {
+					output.writeObject(Identifier.MESSAGE);
 					output.writeObject(message);
 					System.out.println("Sent message: " + message);
 					output.flush();

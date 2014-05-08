@@ -29,7 +29,6 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	private JMenuBar menuBar;
 	private JTextField txtMessage;
 	private JTextArea textConveration;
-	private ArrayList<String> onlineUsers;
 
 	private Client client;
 	private JTextArea onlineList;
@@ -37,11 +36,11 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	/**
 	 * Constructor for ClientWindow
 	 */
-	public ClientWindow(Client client){
+	public ClientWindow(final Client client){
 		this.client = client;
 		this.name = client.getName();
-		onlineUsers = new ArrayList<String>();
 		define();
+		
 	}
 
 	/**
@@ -60,6 +59,12 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 		setTitle("InstaChat");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				client.disconnect();
+			}
+		});
 		setSize(1000, 800);
 		setResizable(true);	
 		setLocationRelativeTo(null);
@@ -184,23 +189,14 @@ public class ClientWindow extends JFrame implements ClientWindowInterface {
 	 * Update OnlineUserList
 	 */
 	public void updateOnlineUserList(ArrayList<String> users){
+		StringBuilder list = new StringBuilder();
 		for(String name : users){
-			if(!onlineUsers.contains(name)){
-				onlineList.append(name + "\n");
-				onlineUsers.add(name);
-			}
+				list.append(name + "\n");
 		}
+		
+		onlineList.setText(list.toString());
 	}
 
-	/**
-	 * Refresh OnlineUserList
-	 */
-	public void refreshOnlineUserList(){
-		onlineList.setText("");
-		for(String name : onlineUsers){
-			onlineList.append(name + "\n");
-		}
-	}
 
 	/**
 	 * send to the server
