@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Server.Identifier;
+
 /**
  * Client class that handles the logics for the ClinetWindow
  * 
@@ -20,13 +22,16 @@ public class Client {
 	private InetAddress inet_ip;
 
 	private Thread sendThread, recieveThread;
-		
+
 	private ObjectInputStream inFromServer = null;
 	private ObjectOutputStream outToServer = null;
 
 	private boolean running;
-	
+
 	private String name;
+
+	private ClientWindow window;
+
 
 	public Client(String ip, int port){
 		openConnection(ip, port);
@@ -53,7 +58,7 @@ public class Client {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Get the name of the user
 	 * 
@@ -99,32 +104,37 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void receive() {
-		final ClientWindow window = new ClientWindow(this); 
+		window = new ClientWindow(this); 
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {
 					while(running){
 						Object message = inFromServer.readObject();			//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
-						
-						if(message instanceof String && !message.equals("")){
-							window.receive((String) message);									//Send message to ClientWindow
-						}
-						if(message instanceof ArrayList){
-							ArrayList<String> users = (ArrayList<String>) message;				//Update the onlineUsersList
+
+						if((message.equals(Identifier.MESSAGE))){
+							String text = (String) inFromServer.readObject();
+							window.receive(text);									//Send message to ClientWindow
+						}else if(message.equals(Identifier.USER)){
+							Object user = inFromServer.readObject();
+							ArrayList<String> users = new ArrayList<>();
+							while(!user.equals(Identifier.NO_MORE_USERS)){
+								users.add((String) user);
+								user = inFromServer.readObject();
+							}
 							updateOnlinelist(users);
 						}
-						
+
 					}
 				} catch (IOException | ClassNotFoundException e) {
-					e.printStackTrace();
+					e.getStackTrace();
 				}
 
 			}
 
 			private void updateOnlinelist(ArrayList<String> users) {
 				if(users.size() > 0){
-					window.refreshOnlineUserList(users);
+					window.updateOnlineUserList(users);
 				}
 			}
 		};	
@@ -149,7 +159,7 @@ public class Client {
 		};
 		sendThread.start();
 	}
-	
+
 	/**
 	 * Disconnect from server
 	 * 
@@ -157,12 +167,13 @@ public class Client {
 	 */
 	public void disconnect(){
 		try {
+			System.out.println("closing");
 			inFromServer.close();
 			outToServer.close();
 			socket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
+
 	}
 }	
