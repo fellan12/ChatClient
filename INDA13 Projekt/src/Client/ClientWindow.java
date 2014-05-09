@@ -69,7 +69,7 @@ public class ClientWindow extends JFrame{
 		setSize(1000, 800);
 		setResizable(true);	
 		setLocationRelativeTo(null);
-		setMinimumSize(new Dimension(440,275));
+		setMinimumSize(new Dimension(270,187));
 		addComponentListener(new ComponentAdapter(){
 	        public void componentResized(ComponentEvent e){
 	            Dimension d= getSize();
@@ -85,9 +85,10 @@ public class ClientWindow extends JFrame{
 
 		//Layout -GridBagLayout
 		GridBagLayout layout = new GridBagLayout();
-		layout.columnWidths = new int[]{45, 805, 150};						//sum = 1000
+		layout.columnWidths = new int[]{45, 805, 148, 2};						//sum = 1000
 		layout.rowHeights = new int[]{75, 695, 30};								//sum = 800
 		panel.setLayout(layout);
+		
 
 		//On Screen Conversation - TextArea/JScrollPane
 		textConveration = new JTextArea();
@@ -97,7 +98,7 @@ public class ClientWindow extends JFrame{
 		textConveration.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(textConveration);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
-		scrollConstrains.insets = new Insets(0, 0, 5, 5);
+		scrollConstrains.insets = new Insets(0, 5, 5, 5);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
 		scrollConstrains.gridx = 0;
 		scrollConstrains.gridy = 0;
@@ -112,26 +113,15 @@ public class ClientWindow extends JFrame{
 		onlineList.setFont(new Font("Arial", Font.PLAIN, 18));
 		onlineList.setEditable(false);
 		onlineList.setMinimumSize(new Dimension(100,30));
-		onlineList.addComponentListener(new ComponentAdapter(){
-	        public void componentResized(ComponentEvent e){
-	            Dimension d= getSize();
-	            Dimension minD=getMinimumSize();
-	            if(d.width<minD.width)
-	                d.width=minD.width;
-	            if(d.height<minD.height)
-	                d.height=minD.height;
-	            	setSize(d);
-	        }
-	    });
 		JScrollPane scrollOnlie = new JScrollPane(onlineList);
 		GridBagConstraints scrollOnlineConstrains = new GridBagConstraints();
-		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 0);
+		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 5);
 		scrollOnlineConstrains.fill = GridBagConstraints.BOTH;
 		scrollOnlineConstrains.gridx = 2;
 		scrollOnlineConstrains.gridy = 0;
-		scrollOnlineConstrains.gridwidth = 2;
+		scrollOnlineConstrains.gridwidth = 1;
 		scrollOnlineConstrains.gridheight = 2;
-		scrollOnlineConstrains.weightx = 0;
+		scrollOnlineConstrains.weightx = 0.1;
 		scrollOnlineConstrains.weighty = 0;
 		panel.add(scrollOnlie, scrollOnlineConstrains);
 
@@ -168,7 +158,7 @@ public class ClientWindow extends JFrame{
 		sendButtonConstrains.fill = GridBagConstraints.BOTH;
 		sendButtonConstrains.gridx = 2;
 		sendButtonConstrains.gridy = 2;
-		sendButtonConstrains.gridwidth = 2;
+		sendButtonConstrains.gridwidth = 1;
 		sendButtonConstrains.weightx = 0;
 		sendButtonConstrains.weighty = 0;
 		panel.add(sendButton, sendButtonConstrains);
@@ -200,7 +190,9 @@ public class ClientWindow extends JFrame{
 				System.exit(0);
 			}
 		});
-		fileMenu.add(menuItemExit);		
+		fileMenu.add(menuItemExit);
+		
+		txtMessage.requestFocusInWindow();
 	}
 
 	/**
@@ -235,7 +227,7 @@ public class ClientWindow extends JFrame{
 	 * @param message
 	 */
 	public void sendMessage(String message){
-		if(message.length() > 0){													//Checks that the message isnt empty
+		if(!message.equals("")){													//Checks that the message isnt empty
 			String text = name + ": " + message;									//Adds the name of the send to the message
 			client.send(text);														//Send the message though the client
 			txtMessage.setText("");													//Set message textfield to empty-string.

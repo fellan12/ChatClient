@@ -38,7 +38,6 @@ public class Client {
 		this.port = port;
 		this.name = name;
 		openConnection(ip, port);														//Open connection
-		window = new ClientWindow(this); 												//Create a ClientWIndow
 	}
 
 	/**
@@ -106,6 +105,8 @@ public class Client {
 	 * Send the name to the server and recieves a true/false message
 	 * if you are allowed to connect.
 	 * 
+	 * during the verifying, if it is true create a CilentWindow
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -117,6 +118,9 @@ public class Client {
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
+		}
+		if(verify == true){
+			window = new ClientWindow(this); 												//Create a ClientWIndow
 		}
 		return verify;
 	}
@@ -154,7 +158,7 @@ public class Client {
 				}
 
 			}
-			
+
 			/**
 			 * Uppdate online user list
 			 * @param users

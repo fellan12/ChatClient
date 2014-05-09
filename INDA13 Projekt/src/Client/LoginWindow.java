@@ -58,19 +58,19 @@ public class LoginWindow extends JFrame {
 		setContentPane(panel);
 
 		//IP-Address  - TextField
-		textIp = new JTextField();
+		textIp = new JTextField("localhost");
 		textIp.setBounds(90, 145, 180, 32);
 		panel.add(textIp);
 		textIp.setColumns(10);
 
 		//Screen Name  - TextField
-		textName = new JTextField();
+		textName = new JTextField("Felix");
 		textName.setBounds(90, 70, 180, 32);
 		textName.setColumns(10);
 		panel.add(textName);
 
 		//Port - TextField
-		textPort = new JTextField();
+		textPort = new JTextField("1234");
 		textPort.setBounds(90, 220, 180, 32);
 		textPort.setColumns(10);
 		panel.add(textPort);
