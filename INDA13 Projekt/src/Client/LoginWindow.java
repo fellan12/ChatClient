@@ -84,7 +84,6 @@ public class LoginWindow extends JFrame {
 		JLabel lblIpadress = new JLabel("IP-Adress:");
 		lblIpadress.setBounds(150, 125, 61, 16);
 		panel.add(lblIpadress);
-
 		//Port - Label
 		JLabel lblPort = new JLabel("Port:");
 		lblPort.setBounds(166, 200, 28, 16);

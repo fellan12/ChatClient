@@ -80,6 +80,8 @@ public class ClientWindow extends JFrame{
 		textConveration = new JTextArea();
 		textConveration.setFont(new Font("Arial", Font.PLAIN, 18));
 		textConveration.setEditable(false);
+		textConveration.setLineWrap(true);
+		textConveration.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(textConveration);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
 		scrollConstrains.insets = new Insets(0, 0, 5, 5);
@@ -128,7 +130,7 @@ public class ClientWindow extends JFrame{
 		panel.add(txtMessage, txtMessageConstrains);
 		txtMessage.setColumns(10);
 		txtMessage.requestFocusInWindow();												//Sets focus on the message input
-
+		
 		//Send - Button
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {

@@ -3,12 +3,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import Server.Identifier;
 
@@ -40,8 +37,8 @@ public class Client {
 		this.ip = ip;
 		this.port = port;
 		this.name = name;
-		openConnection(ip, port);
-		window = new ClientWindow(this); 
+		openConnection(ip, port);														//Open connection
+		window = new ClientWindow(this); 												//Create a ClientWIndow
 	}
 
 	/**
@@ -67,10 +64,21 @@ public class Client {
 		return true;
 	}
 
-	public boolean connectToServer(String name, String ip, int port){
-		if(openConnection(ip, port)){
-			verifyConnection(name);
-			receive();
+	/**
+	 * connect to server
+	 * 
+	 * Tries to open connection to server by open sockets and streams
+	 * and sends name to verify its not in use. 
+	 * 
+	 * @param name
+	 * @param ip
+	 * @param port
+	 * @return	true/false - if it worked or not.
+	 */
+	public boolean reconnectToServer(String name, String ip, int port){
+		if(openConnection(ip, port)){												//Open connection
+			verifyConnection(name);													//Verify name is not in use
+			receive();																//Start receive messages
 			return true;
 		}
 		return false;
@@ -124,20 +132,20 @@ public class Client {
 			public void run(){
 				try {
 					while(running){
-						Object message = inFromServer.readObject();			//wait to put message from stream to string
+						Object message = inFromServer.readObject();					//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
 
 						if((message.equals(Identifier.MESSAGE))){
 							String text = (String) inFromServer.readObject();
 							window.receive(text);									//Send message to ClientWindow
 						}else if(message.equals(Identifier.USER)){
-							Object user = inFromServer.readObject();
+							Object user = inFromServer.readObject();				//Receive name of user online
 							ArrayList<String> users = new ArrayList<>();
 							while(!user.equals(Identifier.NO_MORE_USERS)){
-								users.add((String) user);
-								user = inFromServer.readObject();
+								users.add((String) user);							//add user to users.list
+								user = inFromServer.readObject();					//Receive name of another user, if there are more
 							}
-							updateOnlinelist(users);
+							updateOnlinelist(users);								//Send users-list for updating
 						}
 
 					}
@@ -146,10 +154,14 @@ public class Client {
 				}
 
 			}
-
+			
+			/**
+			 * Uppdate online user list
+			 * @param users
+			 */
 			private void updateOnlinelist(ArrayList<String> users) {
 				if(users.size() > 0){
-					window.updateOnlineUserList(users);
+					window.updateOnlineUserList(users);									//Send users to window for updating					
 				}
 			}
 		};	
@@ -165,16 +177,16 @@ public class Client {
 			sendThread = new Thread("Send-Thread"){
 				public void run(){
 					try {
-						outToServer.writeObject(message);									//send message through the stream
+						outToServer.writeObject(message);									//Send message through the stream
 						System.out.println("Write to server: " + message);
-						outToServer.flush();
+						outToServer.flush();												//Flushes the stream
 					} catch (IOException e) {
 						sendAllowed = false;
 						window.printToScreen("Instachat: Lost connection to server... Trying to reconnect to server!");
-						disconnect();
+						disconnect();														//Disconnect sockets and streams
 						boolean connected = false;
-						while(!connected){
-							connected = connectToServer(name, ip, port);
+						while(!connected){													//Try to reconnect	
+							connected = reconnectToServer(name, ip, port);
 						}
 						window.printToScreen("Instachat: You are reconnected to the server");
 
@@ -193,11 +205,11 @@ public class Client {
 	 */
 	public void disconnect(){
 		try {
-			System.out.println("closing");
-			inFromServer.close();
-			outToServer.close();
-			socket.close();
+			inFromServer.close();														//Close input-stream
+			outToServer.close();														//Close output-stream
+			socket.close();																//Close socket
 			running = false;
+			sendAllowed = false;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
