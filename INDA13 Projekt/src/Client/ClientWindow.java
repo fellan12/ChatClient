@@ -39,8 +39,9 @@ public class ClientWindow extends JFrame{
 	public ClientWindow(final Client client){
 		this.client = client;
 		this.name = client.getName();
+		System.out.println("Define");
 		define();
-		
+		System.out.println("Defined");
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class ClientWindow extends JFrame{
 	 * 
 	 * @param message
 	 */
-	private void printToScreen(String message){
+	public void printToScreen(String message){
 		textConveration.append(message + "\n");
 		textConveration.setCaretPosition(textConveration.getDocument().getLength());					//Sets the caret at the botton
 	}

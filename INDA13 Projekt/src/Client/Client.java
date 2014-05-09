@@ -20,6 +20,8 @@ import Server.Identifier;
 public class Client {
 	private Socket socket;
 	private InetAddress inet_ip;
+	private int port;
+	private String ip;
 
 	private Thread sendThread, recieveThread;
 
@@ -31,10 +33,15 @@ public class Client {
 	private String name;
 
 	private ClientWindow window;
+	private boolean sendAllowed;
 
 
-	public Client(String ip, int port){
+	public Client(String name, String ip, int port){
+		this.ip = ip;
+		this.port = port;
+		this.name = name;
 		openConnection(ip, port);
+		window = new ClientWindow(this); 
 	}
 
 	/**
@@ -52,11 +59,21 @@ public class Client {
 			inFromServer = new ObjectInputStream(input);							//Create a inputstream
 			outToServer = new ObjectOutputStream(socket.getOutputStream());			//Creates a OutputStream
 			running = true;
+			sendAllowed = true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
+	}
+
+	public boolean connectToServer(String name, String ip, int port){
+		if(openConnection(ip, port)){
+			verifyConnection(name);
+			receive();
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -85,7 +102,6 @@ public class Client {
 	 * @return
 	 */
 	public boolean verifyConnection(String userName){
-		name = userName;
 		send(userName);																	//Send name to server for verify
 
 		boolean verify = false;
@@ -104,7 +120,6 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void receive() {
-		window = new ClientWindow(this); 
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {
@@ -146,18 +161,29 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public void send(final String message){
-		sendThread = new Thread("Send-Thread"){
-			public void run(){
-				try {
-					outToServer.writeObject(message);									//send message through the stream
-					System.out.println("Write to server: " + message);
-					outToServer.flush();
-				} catch (IOException e) {		
-					e.printStackTrace();
+		if(sendAllowed){
+			sendThread = new Thread("Send-Thread"){
+				public void run(){
+					try {
+						outToServer.writeObject(message);									//send message through the stream
+						System.out.println("Write to server: " + message);
+						outToServer.flush();
+					} catch (IOException e) {
+						sendAllowed = false;
+						window.printToScreen("Instachat: Lost connection to server... Trying to reconnect to server!");
+						disconnect();
+						boolean connected = false;
+						while(!connected){
+							connected = connectToServer(name, ip, port);
+						}
+						window.printToScreen("Instachat: You are reconnected to the server");
+
+						e.printStackTrace();
+					}
 				}
-			}
-		};
-		sendThread.start();
+			};
+			sendThread.start();
+		}
 	}
 
 	/**
@@ -171,6 +197,7 @@ public class Client {
 			inFromServer.close();
 			outToServer.close();
 			socket.close();
+			running = false;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
