@@ -12,18 +12,18 @@ import java.util.ArrayList;
  * of a client-server chat system.
  * 
  * @author Richard Sjöberg
- * @version 2014-05-08
+ * @version 2014-05-10
  */
 public class Server {
 
-	private ServerSocket servSock; // TODO: 
-	private static final int LIMIT = 20; // The maximum number of connected clients. TODO: Change limit.
+	private ServerSocket servSock; // Waits for client connection requests.  
+	private static final int LIMIT = 20; // The maximum number of connected clients. 
 	private static boolean serverFull; // If users.size() == LIMIT.
-	private static boolean isRunning; // If server is running.
+	public static boolean isRunning; // If server is running.
 	
-	private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
+	//private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
 	private static ArrayList<ObjectOutputStream> outStreams; // The output streams of this server's client-server connections.
-	private static ArrayList<String> users; // The screen name of the users connected to the server.
+	private static ArrayList<String> users; // The screen name of the users connected to the server. 
 	
 	/**
 	 * Set up a server. If the port can not be used, notify the user.
@@ -36,13 +36,7 @@ public class Server {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		//ServerWindow serverGUI = new ServerWindow();
-				
-		
-		int port = 1234; // TODO: Start GUI. Get port from user. 
-		
-		// Create a server that listens for connection requests on port.
-		Server server = new Server(port);
+		Server server = new Server(1234);
 		
 		//TODO: If port can not be used, notify the user (error message).
 		
@@ -60,20 +54,15 @@ public class Server {
 	 * Creates a new server that listens on the given port.
 	 * 
 	 * @param port A given port.
+	 * @throws IOException If port is unavailable.  
 	 */
-	public Server(int port) {
-		clients = new ArrayList<Socket>();
+	public Server(int port) throws IOException {
+		//clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
 		outStreams = new ArrayList<ObjectOutputStream>();
 				
-		try {
-			servSock = new ServerSocket(port);
-			isRunning = true;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			isRunning = false;
-		}
+		servSock = new ServerSocket(port);
+		isRunning = true;
 	}
 	
 	/**
@@ -82,12 +71,12 @@ public class Server {
 	 * full, and does not contain any user with the requested screen name
 	 * (screen name is sent on the socket). 
 	 * 
-	 * If the client is allowed to connect to the chat, the client is added to
-	 * the clients list and the entered user name is added to the users list.
-	 * The connection status is sent on the socket, which tells the client 
-	 * whether its connect request was successful.
+	 * If the client is allowed to connect to the chat, the entered user 
+	 * name is added to the users list. The connection status is sent on 
+	 * the socket, which tells the client whether its connect request was 
+	 * successful.
 	 */
-	private void acceptRequest() {
+	public void acceptRequest() {
 		Socket sock = null; // The socket over which to communicate.
 		Object[] streams; // The streams of the socket.
 		
@@ -102,14 +91,14 @@ public class Server {
 				String name = getName(input);
 				
 				if (!serverFull && !nameInUse(name)) {
-					// TODO: Problem adding/removing from clients and outStreams?
-					clients.add(sock); // Add the connection socket to clients.
+					//clients.add(sock); // Add the connection socket to clients.
 					outStreams.add(output); // Add the output stream of the socket to outStreams.
 					
 					// If the server limit has been reached, the server is full. 
 					if (users.size() == LIMIT) { 
 						serverFull = true;
 					}
+	
 					sendConnectionStatus(true, output);
 					System.out.println("Good to go!"); // TODO: Remove.
 					communicate(streams, sock, name); // Communicate with clients.					
@@ -120,15 +109,16 @@ public class Server {
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			// TODO: If I/O error occurs when waiting for a connection.
 			e.printStackTrace();
 		}
 		updateUsers();
 	}
 	
 	/**
-	 * Returns the object streams stored in an array. The first element
-	 * is the output stream, the second element is the input stream.
+	 * Returns the object streams of the client-server connection on 
+	 * the specified socket, stored in an array. The first element is 
+	 * the output stream, the second element is the input stream.
 	 * 
 	 * @return The object streams stored in an array, null if streams couldn't be fetched.  
 	 */
@@ -184,7 +174,6 @@ public class Server {
 	 */
 	private String getName(ObjectInputStream input) {
 		String name = null;
-
 		try {
 			name = (String) input.readObject();
 			System.out.println("Name request from client: " + name); // TODO: Remove.
@@ -192,8 +181,16 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		
 		return name;
+	}
+	
+	/**
+	 * Checks whether the server is running.
+	 * 
+	 * @return True if server is running, false otherwise.
+	 */
+	public boolean isRunning() {
+		return isRunning;
 	}
 
 	/**
@@ -258,6 +255,13 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	}
+	
+	/**
+	 * Shuts down the server. Changes isRunning to false.
+	 */
+	public void shutDown() {
+		isRunning = false;
 	}
 	
 	/**
@@ -329,11 +333,9 @@ public class Server {
 				output.close();
 				sock.close();
 
-				clients.remove(sock);
+				//clients.remove(sock);
 				outStreams.remove(output);
 				users.remove(name);
-				// Notify clients. Echo the users list typ?
-				// Send a message "user left the chat room"
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
