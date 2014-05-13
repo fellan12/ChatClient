@@ -54,7 +54,7 @@ public class ClientWindow extends JFrame{
 		setContentPane(panel);
 
 		//Frame Settings
-		setTitle("InstaChat");
+		setTitle(client.getName() + " - InstaChat");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {

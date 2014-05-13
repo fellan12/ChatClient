@@ -101,6 +101,7 @@ public class LoginWindow extends JFrame {
 				}
 				client = new Client(textName.getText(), textIp.getText(), Integer.parseInt(textPort.getText()));
 				if(LoginCheck(client)){
+					client.send(textName.getText() + " has joined the chat!");
 					client.receive();
 				}else{
 					client = null;
