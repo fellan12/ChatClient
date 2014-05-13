@@ -6,7 +6,6 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -39,9 +38,7 @@ public class ClientWindow extends JFrame{
 	public ClientWindow(final Client client){
 		this.client = client;
 		this.name = client.getName();
-		System.out.println("Define");
-		define();
-		System.out.println("Defined");
+		define();																	//Create the window
 	}
 
 	/**
@@ -61,7 +58,6 @@ public class ClientWindow extends JFrame{
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
-			@Override
 			public void windowClosing(WindowEvent arg0) {
 				client.disconnect();
 			}
@@ -70,25 +66,25 @@ public class ClientWindow extends JFrame{
 		setResizable(true);	
 		setLocationRelativeTo(null);
 		setMinimumSize(new Dimension(270,187));
-		addComponentListener(new ComponentAdapter(){
-	        public void componentResized(ComponentEvent e){
-	            Dimension d= getSize();
-	            Dimension minD=getMinimumSize();
-	            if(d.width<minD.width)
-	                d.width=minD.width;
-	            if(d.height<minD.height)
-	                d.height=minD.height;
-	            	setSize(d);
-	        }
-	    });
-		
+		addComponentListener(new ComponentAdapter(){								//Set the minimum size for the window
+			public void componentResized(ComponentEvent e){
+				Dimension d= getSize();
+				Dimension minD=getMinimumSize();
+				if(d.width<minD.width)
+					d.width=minD.width;
+				if(d.height<minD.height)
+					d.height=minD.height;
+				setSize(d);
+			}
+		});
+
 
 		//Layout -GridBagLayout
 		GridBagLayout layout = new GridBagLayout();
-		layout.columnWidths = new int[]{45, 805, 148, 2};						//sum = 1000
-		layout.rowHeights = new int[]{75, 695, 30};								//sum = 800
+		layout.columnWidths = new int[]{45, 805, 148, 2};							//sum = 1000
+		layout.rowHeights = new int[]{75, 695, 30};									//sum = 800
 		panel.setLayout(layout);
-		
+
 
 		//On Screen Conversation - TextArea/JScrollPane
 		textConveration = new JTextArea();
@@ -128,7 +124,7 @@ public class ClientWindow extends JFrame{
 		//Message Field - TextField
 		txtMessage = new JTextField();
 		txtMessage.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {										//KeyListener for clicking ENTER
+			public void keyPressed(KeyEvent e) {									//KeyListener for clicking ENTER
 				if(e.getKeyCode() == KeyEvent.VK_ENTER){
 					sendMessage(txtMessage.getText());
 				}
@@ -144,12 +140,12 @@ public class ClientWindow extends JFrame{
 		txtMessageConstrains.weighty = 0;
 		panel.add(txtMessage, txtMessageConstrains);
 		txtMessage.setColumns(10);
-		txtMessage.requestFocusInWindow();												//Sets focus on the message input
-		
+		txtMessage.requestFocusInWindow();											//Sets focus on the message input
+
 		//Send - Button
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {								//ActionListener for clicking button
+			public void actionPerformed(ActionEvent arg0) {							//ActionListener for clicking button
 				sendMessage(txtMessage.getText());
 				txtMessage.requestFocusInWindow();
 			}
@@ -191,7 +187,7 @@ public class ClientWindow extends JFrame{
 			}
 		});
 		fileMenu.add(menuItemExit);
-		
+
 		txtMessage.requestFocusInWindow();
 	}
 
@@ -202,7 +198,7 @@ public class ClientWindow extends JFrame{
 	 */
 	public void printToScreen(String message){
 		textConveration.append(message + "\n");
-		textConveration.setCaretPosition(textConveration.getDocument().getLength());					//Sets the caret at the botton
+		textConveration.setCaretPosition(textConveration.getDocument().getLength());//Sets the caret at the botton
 	}
 
 	/**
@@ -213,11 +209,11 @@ public class ClientWindow extends JFrame{
 	 */
 	public void updateOnlineUserList(ArrayList<String> users){
 		StringBuilder list = new StringBuilder();
-		for(String name : users){																	//Iterates though the user-list
-				list.append(name + "\n");															//Append it to a StringBuilder
+		for(String name : users){													//Iterates though the user-list
+			list.append(name + "\n");										 		//Append it to a StringBuilder
 		}
-		
-		onlineList.setText(list.toString());														//Set onlineList to StringBuilder-list
+
+		onlineList.setText(list.toString());										//Set onlineList to StringBuilder-list
 	}
 
 
@@ -260,7 +256,3 @@ public class ClientWindow extends JFrame{
 
 	}
 }
-
-//TODO Smilesar
-//TODO Logged in activity
-

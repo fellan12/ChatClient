@@ -1,6 +1,5 @@
 package Client;
 import java.awt.EventQueue;
-import java.awt.Frame;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,8 +12,6 @@ import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class LoginWindow extends JFrame {
@@ -92,14 +89,26 @@ public class LoginWindow extends JFrame {
 		//Login - Button
 		JButton btnNewButton = new JButton("Login");
 		btnNewButton.setBounds(130, 347, 100, 30);
-		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
+		btnNewButton.addActionListener(new ActionListener() {													//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
-				client = new Client(textName.getText(), textIp.getText(), Integer.parseInt(textPort.getText()));
-				if(LoginCheck(client)){
-					client.receive();
-				}else{
-					client = null;
+				try{
+					int port = Integer.parseInt(textPort.getText());											//Check if the port is correct
+					if(port > 0 && port <= 65535){																//Check that port is of the correct value
+						try{
+							client = new Client(textName.getText(), textIp.getText(), port);						//Create the client
+							if(LoginCheck(client)){																//LoginCheck
+								client.receive();
+							}else{
+								client = null;
+							}
+						}catch(Exception e){
+							JOptionPane.showMessageDialog(null, "IP-Address is invalid");						//If IP-Address is invalid
+						}
+					}
+				}catch(NumberFormatException e){
+					JOptionPane.showMessageDialog(null,"Port is invalid");										//If the port is invalid
 				}
+
 			}
 		});
 		panel.add(btnNewButton);
@@ -112,14 +121,10 @@ public class LoginWindow extends JFrame {
 	 */
 	public boolean LoginCheck(Client client){
 		boolean connect = false;
-		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
-			if(client.verifyConnection(textName.getText())){
-				if(client.isConnectionOpen()){
-					connect = true;
-				}
-			}else{
-				JOptionPane.showMessageDialog(null, "Username is unavailable");
-			}
+		if(client.verifyConnection(textName.getText())){														//Check is the name is in use
+			connect = true;
+		}else{
+			JOptionPane.showMessageDialog(null, "Username is unavailable");										//If the name is in use
 		}
 		return connect;
 	}

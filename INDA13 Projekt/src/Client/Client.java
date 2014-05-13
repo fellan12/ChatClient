@@ -120,7 +120,7 @@ public class Client {
 			e.printStackTrace();
 		}
 		if(verify == true){
-			window = new ClientWindow(this); 												//Create a ClientWIndow
+			window = new ClientWindow(this); 											//Create a ClientWIndow
 		}
 		return verify;
 	}
@@ -136,20 +136,20 @@ public class Client {
 			public void run(){
 				try {
 					while(running){
-						Object message = inFromServer.readObject();					//wait to put message from stream to string
+						Object message = inFromServer.readObject();						//wait to put message from stream to string
 						System.out.println("Recieve from server: " + message);
 
 						if((message.equals(Identifier.MESSAGE))){
 							String text = (String) inFromServer.readObject();
-							window.receive(text);									//Send message to ClientWindow
+							window.receive(text);										//Send message to ClientWindow
 						}else if(message.equals(Identifier.USER)){
-							Object user = inFromServer.readObject();				//Receive name of user online
-							ArrayList<String> users = new ArrayList<>();
+							Object user = inFromServer.readObject();					//Receive name of user online
+							ArrayList<String> users = new ArrayList<>();	
 							while(!user.equals(Identifier.NO_MORE_USERS)){
-								users.add((String) user);							//add user to users.list
-								user = inFromServer.readObject();					//Receive name of another user, if there are more
+								users.add((String) user);								//add user to users.list
+								user = inFromServer.readObject();						//Receive name of another user, if there are more
 							}
-							updateOnlinelist(users);								//Send users-list for updating
+							updateOnlinelist(users);									//Send users-list for updating
 						}
 
 					}
@@ -181,15 +181,15 @@ public class Client {
 			sendThread = new Thread("Send-Thread"){
 				public void run(){
 					try {
-						outToServer.writeObject(message);									//Send message through the stream
+						outToServer.writeObject(message);								//Send message through the stream
 						System.out.println("Write to server: " + message);
-						outToServer.flush();												//Flushes the stream
+						outToServer.flush();											//Flushes the stream
 					} catch (IOException e) {
 						sendAllowed = false;
 						window.printToScreen("Instachat: Lost connection to server... Trying to reconnect to server!");
-						disconnect();														//Disconnect sockets and streams
+						disconnect();													//Disconnect sockets and streams
 						boolean connected = false;
-						while(!connected){													//Try to reconnect	
+						while(!connected){												//Try to reconnect	
 							connected = reconnectToServer(name, ip, port);
 						}
 						window.printToScreen("Instachat: You are reconnected to the server");
