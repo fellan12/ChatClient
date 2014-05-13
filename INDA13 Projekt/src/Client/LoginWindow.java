@@ -105,10 +105,10 @@ public class LoginWindow extends JFrame {
 							client = null;
 						}
 					}catch (Exception e){
-						JOptionPane.showMessageDialog(null, "Check you IP/Port inputs");
+						JOptionPane.showMessageDialog(null, "Check your IP/Port inputs");
 					}
 				}catch(NumberFormatException e){
-					JOptionPane.showMessageDialog(null,"Port is invalid");
+					JOptionPane.showMessageDialog(null, "Port is invalid");
 				}
 			}
 		});

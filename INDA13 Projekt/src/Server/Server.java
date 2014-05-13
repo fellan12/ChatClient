@@ -19,50 +19,26 @@ public class Server {
 	private ServerSocket servSock; // Waits for client connection requests.  
 	private static final int LIMIT = 20; // The maximum number of connected clients. 
 	private static boolean serverFull; // If users.size() == LIMIT.
-	public static boolean isRunning; // If server is running.
+	private static boolean isRunning; // If server is running.
 	
-	//private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
 	private static ArrayList<ObjectOutputStream> outStreams; // The output streams of this server's client-server connections.
 	private static ArrayList<String> users; // The screen name of the users connected to the server.
-	private ArrayList<ChatService> connections; // Contains all running client-server connections.
+	private static ArrayList<ChatService> connections; // The client-server connections of this server.
+	private static ArrayList<Socket> sockets; // The socket of the client-server sockets.
 	
 	/**
-	 * Set up a server. If the port can not be used, notify the user.
-	 * If the server is successfully set up, call the acceptRequests
-	 * method, that handles all connection requests to the server and
-	 * the communication between the connected clients.
-	 * 		
-	 * @param args Ignore.
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {
-		
-		Server server = new Server(1234);
-		
-		//TODO: If port can not be used, notify the user (error message).
-		
-		// TODO: Make sure the state of the server is shown in the server GUI. 
-		// E.g. you start the server and isRunning is printed to the GUI.
-		
-		while (isRunning) { // Server was successfully set up.
-			server.acceptRequest(); 
-		}
-		
-		//TODO: Not running anymore? Make sure user is notified!
-	}
-	
-	/**
-	 * Creates a new server that listens on the given port.
+	 * Creates a new server that listens for connections requests from clients 
+	 * on the given port.
 	 * 
 	 * @param port A given port.
 	 * @throws IOException If port is unavailable.  
 	 */
 	public Server(int port) throws IOException {
-		//clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
 		outStreams = new ArrayList<ObjectOutputStream>();
 		connections = new ArrayList<ChatService>();
-				
+		sockets = new ArrayList<Socket>();
+						
 		servSock = new ServerSocket(port);
 		isRunning = true;
 	}
@@ -79,12 +55,12 @@ public class Server {
 	 * successful.
 	 */
 	public void acceptRequest() {
-		Socket sock = null; // The socket over which to communicate.
 		Object[] streams; // The streams of the socket.
+		Socket sock;
 		
 		try {
-			// TODO: PROBLEM?!
-			sock = servSock.accept(); 
+			sock = servSock.accept();
+			sockets.add(sock);
 			streams = getStreams(sock); 
 			
 			if (streams != null) {
@@ -113,6 +89,8 @@ public class Server {
 		} catch (IOException e) {
 			// TODO: If I/O error occurs when waiting for a connection.
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			// Do nothing.
 		}
 		updateUsers();
 	}
@@ -253,8 +231,8 @@ public class Server {
 			// Communicate with client in a new thread.
 			ChatService chat = new ChatService(streams, sock, name);
 			Thread communicate = new Thread(chat);
-			communicate.start();
 			connections.add(chat);
+			communicate.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -268,8 +246,24 @@ public class Server {
 	public void shutDown() {
 		for (ChatService connection : connections) {
 			connection.closeConnection();
-			connections.remove(connection);
 		}
+				
+		try {
+			for (Socket socket : sockets) {
+				socket.close();
+				socket = null;
+			}
+			servSock.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		servSock = null;
+		sockets = null;
+		users = null;
+		outStreams = null;
+		connections = null;
 		isRunning = false;
 	}
 	
@@ -310,8 +304,6 @@ public class Server {
 		 * If the user has disconnected from the server, remove the client
 		 * connection from the server and make sure all connected clients
 		 * are notified.
-		 * 
-		 * TODO: 
 		 */
 		public void run() {
 			while (true) {
@@ -342,7 +334,6 @@ public class Server {
 				output.close();
 				sock.close();
 
-				//clients.remove(sock);
 				outStreams.remove(output);
 				users.remove(name);
 			} catch (IOException e) {
