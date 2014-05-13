@@ -94,7 +94,7 @@ public class ClientWindow extends JFrame{
 		textConveration.setWrapStyleWord(true);
 		JScrollPane scroll = new JScrollPane(textConveration);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
-		scrollConstrains.insets = new Insets(0, 5, 5, 5);
+		scrollConstrains.insets = new Insets(0, 0, 5, 5);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
 		scrollConstrains.gridx = 0;
 		scrollConstrains.gridy = 0;
@@ -111,7 +111,7 @@ public class ClientWindow extends JFrame{
 		onlineList.setMinimumSize(new Dimension(100,30));
 		JScrollPane scrollOnlie = new JScrollPane(onlineList);
 		GridBagConstraints scrollOnlineConstrains = new GridBagConstraints();
-		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 5);
+		scrollOnlineConstrains.insets = new Insets(0, 0, 5, 0);
 		scrollOnlineConstrains.fill = GridBagConstraints.BOTH;
 		scrollOnlineConstrains.gridx = 2;
 		scrollOnlineConstrains.gridy = 0;

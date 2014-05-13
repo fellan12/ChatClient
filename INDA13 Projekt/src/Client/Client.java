@@ -188,7 +188,7 @@ public class Client {
 						outToServer.flush();											//Flushes the stream
 					} catch (IOException e) {
 						sendAllowed = false;
-						window.printToScreen("Instachat: Lost connection to server... Trying to reconnect to server!");
+						window.printToScreen("Instachat: Lost connection to server! Trying to reconnect to server....");
 						disconnect();													//Disconnect sockets and streams
 						boolean connected = false;
 						while(!connected){												//Try to reconnect	
