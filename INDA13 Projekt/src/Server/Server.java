@@ -23,7 +23,8 @@ public class Server {
 	
 	//private static ArrayList<Socket> clients; // The sockets of this server's client-server connections. TODO: Change to streams?
 	private static ArrayList<ObjectOutputStream> outStreams; // The output streams of this server's client-server connections.
-	private static ArrayList<String> users; // The screen name of the users connected to the server. 
+	private static ArrayList<String> users; // The screen name of the users connected to the server.
+	private ArrayList<ChatService> connections; // Contains all running client-server connections.
 	
 	/**
 	 * Set up a server. If the port can not be used, notify the user.
@@ -60,6 +61,7 @@ public class Server {
 		//clients = new ArrayList<Socket>();
 		users = new ArrayList<String>();
 		outStreams = new ArrayList<ObjectOutputStream>();
+		connections = new ArrayList<ChatService>();
 				
 		servSock = new ServerSocket(port);
 		isRunning = true;
@@ -239,7 +241,8 @@ public class Server {
 	
 	/**
 	 * Creates an instance of ChatService, which handles he communication
-	 * between the server and the clients, in a new thread.
+	 * between the server and the clients, in a new thread. Adds the 
+	 * ChatService to the connections list.
 	 * 
 	 * @param streams The streams over which to communicate.
 	 * @param sock The socket of this client-server connection.
@@ -251,6 +254,7 @@ public class Server {
 			ChatService chat = new ChatService(streams, sock, name);
 			Thread communicate = new Thread(chat);
 			communicate.start();
+			connections.add(chat);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -258,9 +262,14 @@ public class Server {
 	}
 	
 	/**
-	 * Shuts down the server. Changes isRunning to false.
+	 * Shuts down the server. Closes all connections, removes them from
+	 * the connections list and changes isRunning to false.
 	 */
 	public void shutDown() {
+		for (ChatService connection : connections) {
+			connection.closeConnection();
+			connections.remove(connection);
+		}
 		isRunning = false;
 	}
 	
