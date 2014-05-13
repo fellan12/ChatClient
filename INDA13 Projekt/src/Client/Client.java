@@ -7,8 +7,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import Server.Identifier;
 
 /**
@@ -51,7 +49,7 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
+			inet_ip = InetAddress.getByName(ip);									//Make String ip to Inet-address ip
 			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
 			InputStream input = socket.getInputStream();
 			inFromServer = new ObjectInputStream(input);							//Create a inputstream
@@ -139,7 +137,7 @@ public class Client {
 				try {
 					while(running){
 						Object message = inFromServer.readObject();						//wait to put message from stream to string
-						System.out.println("Recieve from server: " + message);
+						System.out.println("Recieve from server: " + message);			// TODO: Remove	
 
 						if((message.equals(Identifier.MESSAGE))){
 							String text = (String) inFromServer.readObject();
@@ -153,12 +151,19 @@ public class Client {
 							}
 							updateOnlinelist(users);									//Send users-list for updating
 						}
-
 					}
 				} catch (IOException | ClassNotFoundException e) {
+					sendAllowed = false;
+					window.printToScreen("Instachat: Lost connection to server! Trying to reconnect to server...");
+					disconnect();													//Disconnect sockets and streams
+					boolean connected = false;
+					while(!connected){												//Try to reconnect	
+						connected = reconnectToServer(name, ip, port);
+					}
+					window.printToScreen("Instachat: You are reconnected to the server");
+					
 					e.getStackTrace();
 				}
-
 			}
 
 			/**
@@ -187,15 +192,6 @@ public class Client {
 						System.out.println("Write to server: " + message);
 						outToServer.flush();											//Flushes the stream
 					} catch (IOException e) {
-						sendAllowed = false;
-						window.printToScreen("Instachat: Lost connection to server! Trying to reconnect to server...");
-						disconnect();													//Disconnect sockets and streams
-						boolean connected = false;
-						while(!connected){												//Try to reconnect	
-							connected = reconnectToServer(name, ip, port);
-						}
-						window.printToScreen("Instachat: You are reconnected to the server");
-
 						e.printStackTrace();
 					}
 				}
