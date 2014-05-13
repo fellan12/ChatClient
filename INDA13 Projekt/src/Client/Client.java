@@ -76,7 +76,7 @@ public class Client {
 	 */
 	public boolean reconnectToServer(String name, String ip, int port){
 		if(openConnection(ip, port)){												//Open connection
-			verifyConnection(name);													//Verify name is not in use
+			send(name);																//Send name to server for verify
 			receive();																//Start receive messages
 			return true;
 		}
