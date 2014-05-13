@@ -170,7 +170,7 @@ public class ClientWindow extends JFrame{
 
 		//MenuItem - Open
 		JMenuItem menuItemOpen = new JMenuItem("Save");
-		menuItemOpen.addActionListener(new ActionListener() {
+		menuItemOpen.addActionListener(new ActionListener() {						//ActionListener for Save
 			public void actionPerformed(ActionEvent arg0) {
 				save();
 			}
@@ -179,8 +179,8 @@ public class ClientWindow extends JFrame{
 
 		//MenuItem - Exit
 		JMenuItem menuItemExit = new JMenuItem("Exit");
-		menuItemExit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		menuItemExit.addActionListener(new ActionListener() {						//ActionListener for Exit
+			public void actionPerformed(ActionEvent arg0) {	
 				client.disconnect();
 				dispose();
 				System.exit(0);
@@ -197,7 +197,7 @@ public class ClientWindow extends JFrame{
 	 * @param message
 	 */
 	public void printToScreen(String message){
-		textConveration.append(message + "\n");
+		textConveration.append(message + "\n");										//Print the message to the screen
 		textConveration.setCaretPosition(textConveration.getDocument().getLength());//Sets the caret at the botton
 	}
 
@@ -243,12 +243,12 @@ public class ClientWindow extends JFrame{
 	 */
 	public void save(){
 		try {
-			DateFormat dateformat = new SimpleDateFormat("HH-mm-ss_dd-MM-yy");
-			Date currentDate = new Date();
+			DateFormat dateformat = new SimpleDateFormat("HH-mm-ss_dd-MM-yy");		//Dataformat
+			Date currentDate = new Date();											//Get the current date
 
-			BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation_ " + dateformat.format(currentDate) + ".txt"));
-			saveFile.write(textConveration.getText());
-			saveFile.close();
+			BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation_ " + dateformat.format(currentDate) + ".txt")); //Create a savefile
+			saveFile.write(textConveration.getText());								//Write textConvesation to file
+			saveFile.close();														//Close the file
 			JOptionPane.showMessageDialog(null, "Saved Conversation");
 		} catch (IOException e) {
 			e.printStackTrace();

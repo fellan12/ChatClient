@@ -96,15 +96,19 @@ public class LoginWindow extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				try{
 					int port = Integer.parseInt(textPort.getText());
+					try{
+						client = new Client(textName.getText(), textIp.getText(), port);
+						if(LoginCheck(client)){
+							client.send(textName.getText() + " has joined the chat!");
+							client.receive();
+						}else{
+							client = null;
+						}
+					}catch (Exception e){
+						JOptionPane.showMessageDialog(null, "Check you IP/Port inputs");
+					}
 				}catch(NumberFormatException e){
 					JOptionPane.showMessageDialog(null,"Port is invalid");
-				}
-				client = new Client(textName.getText(), textIp.getText(), Integer.parseInt(textPort.getText()));
-				if(LoginCheck(client)){
-					client.send(textName.getText() + " has joined the chat!");
-					client.receive();
-				}else{
-					client = null;
 				}
 			}
 		});
