@@ -79,7 +79,8 @@ public class Server {
 	
 					sendConnectionStatus(true, output);
 					System.out.println("Good to go!"); // TODO: Remove.
-					communicate(streams, sock, name); // Communicate with clients.					
+					communicate(streams, sock, name); // Communicate with clients.
+					updateUsers();
 				} else {
 					// Client is not connected to server.
 					sendConnectionStatus(false, output);
@@ -92,7 +93,6 @@ public class Server {
 		} catch (NullPointerException e) {
 			// Do nothing.
 		}
-		updateUsers();
 	}
 	
 	/**
