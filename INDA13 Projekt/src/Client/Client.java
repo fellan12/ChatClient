@@ -19,6 +19,7 @@ public class Client {
 	private InetAddress inet_ip;
 	private int port;
 	private String ip;
+	private String name;
 
 	private Thread sendThread, recieveThread;
 
@@ -27,11 +28,8 @@ public class Client {
 
 	private boolean running;
 
-	private String name;
-
 	private ClientWindow window;
 	private boolean sendAllowed;
-
 
 	public Client(String name, String ip, int port){
 		this.ip = ip;
@@ -50,14 +48,19 @@ public class Client {
 	public boolean openConnection(String ip, int port){
 		try {
 			inet_ip = InetAddress.getByName(ip);									//Make String ip to Inet-address ip
+			System.out.println("got ip");
 			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
-			InputStream input = socket.getInputStream();
-			inFromServer = new ObjectInputStream(input);							//Create a inputstream
+			System.out.println("got socket");
+			inFromServer = new ObjectInputStream(socket.getInputStream());			//Create a inputstream TODO: Here is where it breaks.
+			System.out.println("got instream");
 			outToServer = new ObjectOutputStream(socket.getOutputStream());			//Creates a OutputStream
+			System.out.println("got outstream");
 			running = true;
 			sendAllowed = true;
+			System.out.println("got everything");
 		} catch (IOException e) {
-			e.printStackTrace();
+			e.printStackTrace(); // TODO: Remove.
+			System.out.println("Could not connect to server!"); //TODO: Remove.
 			return false;
 		}
 		return true;
@@ -126,9 +129,9 @@ public class Client {
 	}
 
 	/**
-	 * receives messeges from the server.
+	 * Receives messages from the server.
 	 * 
-	 * @return message - the recevied message.
+	 * @return message - the received message.
 	 * @throws IOException 
 	 */
 	public void receive() {
@@ -158,16 +161,17 @@ public class Client {
 					disconnect();													//Disconnect sockets and streams
 					boolean connected = false;
 					while(!connected){												//Try to reconnect	
-						connected = reconnectToServer(name, ip, port);
+						connected = reconnectToServer(name, ip, port); 
 					}
-					window.printToScreen("Instachat: You are reconnected to the server");
+					window.printToScreen("Instachat: You have been reconnected to the server!");
 					
 					e.getStackTrace();
 				}
 			}
 
 			/**
-			 * Uppdate online user list
+			 * Update online user list
+			 * 
 			 * @param users
 			 */
 			private void updateOnlinelist(ArrayList<String> users) {

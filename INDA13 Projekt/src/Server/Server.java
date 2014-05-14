@@ -201,9 +201,9 @@ public class Server {
 	 * TODO: EXECUTE SOMEWHERE! In the chatService???
 	 */
 	private void updateUsers() {
-		for (ObjectOutputStream output : outStreams) {
-			// Send the users list on client
-			try {
+		// Send the users list on client
+		try {
+			for (ObjectOutputStream output : outStreams) {
 				System.out.println(users);
 				output.writeObject(Identifier.USER);
 				for(String name : users){
@@ -211,9 +211,9 @@ public class Server {
 				}
 				output.writeObject(Identifier.NO_MORE_USERS);
 				output.flush();
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
