@@ -1,6 +1,5 @@
 package Client;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -14,6 +13,7 @@ import Server.Identifier;
  * 
  * @author Felix De Silva
  */
+
 public class Client {
 	private Socket socket;
 	private InetAddress inet_ip;
@@ -59,8 +59,7 @@ public class Client {
 			sendAllowed = true;
 			System.out.println("got everything");
 		} catch (IOException e) {
-			e.printStackTrace(); // TODO: Remove.
-			System.out.println("Could not connect to server!"); //TODO: Remove.
+			System.out.println("Reconnecting"); //TODO: Remove.
 			return false;
 		}
 		return true;

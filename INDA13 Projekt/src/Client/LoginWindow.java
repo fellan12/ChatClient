@@ -1,6 +1,5 @@
 package Client;
 import java.awt.EventQueue;
-import java.awt.Frame;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,11 +12,9 @@ import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-@SuppressWarnings("serial")
 public class LoginWindow extends JFrame {
+	private static final long serialVersionUID = 6057296788704641384L;
 	private JPanel panel;
 	private JTextField textIp;
 	private JTextField textName;

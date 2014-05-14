@@ -161,7 +161,7 @@ public class ServerWindow extends JFrame {
 	 * @param args Ignore.
 	 */
 	public static void main(String[] args) {
-		ServerWindow serverGUI = new ServerWindow();
+		new ServerWindow();
 		
 		while (true) {
 			// Wait until the server has been set up.

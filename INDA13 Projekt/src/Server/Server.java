@@ -88,8 +88,7 @@ public class Server {
 				}
 			}
 		} catch (IOException e) {
-			// TODO: If I/O error occurs when waiting for a connection.
-			e.printStackTrace();
+			//Do nothing.
 		} catch (NullPointerException e) {
 			// Do nothing.
 		}
