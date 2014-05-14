@@ -55,7 +55,7 @@ public class LoginWindow extends JFrame {
 		setContentPane(panel);
 
 		//IP-Address  - TextField
-		textIp = new JTextField("localhost");
+		textIp = new JTextField();
 		textIp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
@@ -81,7 +81,7 @@ public class LoginWindow extends JFrame {
 		textIp.setColumns(10);
 
 		//Screen Name  - TextField
-		textName = new JTextField("felix");
+		textName = new JTextField();
 		textName.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
@@ -107,7 +107,7 @@ public class LoginWindow extends JFrame {
 		panel.add(textName);
 
 		//Port - TextField
-		textPort = new JTextField("123");
+		textPort = new JTextField();
 		textPort.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try{
