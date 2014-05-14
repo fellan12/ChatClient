@@ -88,6 +88,11 @@ public class ClientWindow extends JFrame{
 
 		//On Screen Conversation - TextArea/JScrollPane
 		textConveration = new JTextArea();
+		textConveration.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				txtMessage.requestFocusInWindow();											//Sets focus on the message input
+			}
+		});
 		textConveration.setFont(new Font("Arial", Font.PLAIN, 18));
 		textConveration.setEditable(false);
 		textConveration.setLineWrap(true);
@@ -106,6 +111,11 @@ public class ClientWindow extends JFrame{
 
 		//On Screen OnlineList - TextArea/JScrollPane
 		onlineList = new JTextArea();
+		onlineList.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				txtMessage.requestFocusInWindow();											//Sets focus on the message input
+			}
+		});
 		onlineList.setFont(new Font("Arial", Font.PLAIN, 18));
 		onlineList.setEditable(false);
 		onlineList.setMinimumSize(new Dimension(100,30));
@@ -124,12 +134,14 @@ public class ClientWindow extends JFrame{
 		//Message Field - TextField
 		txtMessage = new JTextField();
 		txtMessage.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e) {									//KeyListener for clicking ENTER
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER && !txtMessage.getText().equals("")){
 					sendMessage(txtMessage.getText());
 				}
 			}
 		});
+		txtMessage.setFont(new Font("Arial", Font.PLAIN, 18));
+		txtMessage.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.GRAY));
 		GridBagConstraints txtMessageConstrains = new GridBagConstraints();
 		txtMessageConstrains.fill = GridBagConstraints.HORIZONTAL;
 		txtMessageConstrains.insets = new Insets(0, 0, 0, 5);
@@ -140,7 +152,6 @@ public class ClientWindow extends JFrame{
 		txtMessageConstrains.weighty = 0;
 		panel.add(txtMessage, txtMessageConstrains);
 		txtMessage.setColumns(10);
-		txtMessage.requestFocusInWindow();											//Sets focus on the message input
 
 		//Send - Button
 		JButton sendButton = new JButton("Send");
@@ -187,7 +198,7 @@ public class ClientWindow extends JFrame{
 			}
 		});
 		fileMenu.add(menuItemExit);
-
+		
 		txtMessage.requestFocusInWindow();
 	}
 

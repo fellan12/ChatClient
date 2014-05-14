@@ -59,18 +59,78 @@ public class LoginWindow extends JFrame {
 
 		//IP-Address  - TextField
 		textIp = new JTextField("localhost");
+		textIp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					int port = Integer.parseInt(textPort.getText());
+					try{
+						client = new Client(textName.getText(), textIp.getText(), port);
+						if(LoginCheck(client)){
+							client.send(textName.getText() + " has joined the chat!");
+							client.receive();
+						}else{
+							client = null;
+						}
+					}catch (Exception arg){
+						JOptionPane.showMessageDialog(null, "Check your IP/Port inputs");
+					}
+				}catch(NumberFormatException arg){
+					JOptionPane.showMessageDialog(null, "Port is invalid");
+				}
+			}
+		});
 		textIp.setBounds(90, 145, 180, 32);
 		panel.add(textIp);
 		textIp.setColumns(10);
 
 		//Screen Name  - TextField
-		textName = new JTextField("Felix");
+		textName = new JTextField("felix");
+		textName.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					int port = Integer.parseInt(textPort.getText());
+					try{
+						client = new Client(textName.getText(), textIp.getText(), port);
+						if(LoginCheck(client)){
+							client.send(textName.getText() + " has joined the chat!");
+							client.receive();
+						}else{
+							client = null;
+						}
+					}catch (Exception arg0){
+						JOptionPane.showMessageDialog(null, "Check your IP/Port inputs");
+					}
+				}catch(NumberFormatException arg0){
+					JOptionPane.showMessageDialog(null, "Port is invalid");
+				}
+			}
+		});
 		textName.setBounds(90, 70, 180, 32);
 		textName.setColumns(10);
 		panel.add(textName);
 
 		//Port - TextField
-		textPort = new JTextField("1234");
+		textPort = new JTextField("123");
+		textPort.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try{
+					int port = Integer.parseInt(textPort.getText());
+					try{
+						client = new Client(textName.getText(), textIp.getText(), port);
+						if(LoginCheck(client)){
+							client.send(textName.getText() + " has joined the chat!");
+							client.receive();
+						}else{
+							client = null;
+						}
+					}catch (Exception e){
+						JOptionPane.showMessageDialog(null, "Check your IP/Port inputs");
+					}
+				}catch(NumberFormatException e){
+					JOptionPane.showMessageDialog(null, "Port is invalid");
+				}
+			}
+		});
 		textPort.setBounds(90, 220, 180, 32);
 		textPort.setColumns(10);
 		panel.add(textPort);
