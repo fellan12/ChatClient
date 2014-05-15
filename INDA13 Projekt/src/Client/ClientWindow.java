@@ -202,9 +202,9 @@ public class ClientWindow extends JFrame{
 	}
 
 	/**
-	 * Print the message to the screen
+	 * Print the given message to the chat window.
 	 * 
-	 * @param message
+	 * @param message A given string message.
 	 */
 	public void printToScreen(String message){
 		textConveration.append(message + "\n");										//Print the message to the screen
@@ -212,10 +212,10 @@ public class ClientWindow extends JFrame{
 	}
 
 	/**
-	 * Update OnlineUserList
-	 * 
-	 * Builds a string with alla the users online and
-	 * put it on the onlineList
+	 * Builds a string with all the users online and
+	 *  the onlineList.
+	 *  
+	 *  @param users Array holding the users currently connected to the server. 
 	 */
 	public void updateOnlineUserList(ArrayList<String> users){
 		StringBuilder list = new StringBuilder();
