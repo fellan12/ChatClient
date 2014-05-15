@@ -179,13 +179,20 @@ public class LoginWindow extends JFrame {
 	 */
 	public boolean LoginCheck(Client client){
 		boolean connect = false;
+		System.out.println(textName.getText());
+		System.out.println(textIp.getText());
+		System.out.println(textPort.getText());
 		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
-			if(client.verifyConnection(textName.getText())){
-				if(client.isConnectionOpen()){
-					connect = true;
+			if(textName.getText().length() > 0 && textName.getText().length() <= 14){
+				if(client.verifyConnection(textName.getText())){
+					if(client.isConnectionOpen()){
+						connect = true;
+					}
+				}else{
+					JOptionPane.showMessageDialog(null, "Username is unavailable");
 				}
 			}else{
-				JOptionPane.showMessageDialog(null, "Username is unavailable");
+				JOptionPane.showMessageDialog(null, "Username is to long, max 14 characters");
 			}
 		}
 		return connect;
