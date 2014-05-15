@@ -9,33 +9,44 @@ import java.util.ArrayList;
 import Server.Identifier;
 
 /**
- * Client class that handles the logics for the ClinetWindow
+ * Client is the class that handles the backend for the ClinetWindow
  * 
  * @author Felix De Silva
+ * @date 15 maj 2014
  */
 
 public class Client {
-	private Socket socket;
-	private InetAddress inet_ip;
-	private int port;
-	private String ip;
-	private String name;
+	//TCP - related
+	private Socket socket;							//Socket for connecting to the server
+	private InetAddress inet_ip;					//InetAddress for connecting to the server
 
-	private Thread sendThread, recieveThread;
+	//Streams
+	private ObjectInputStream inFromServer;			//Stream to receiving objects 
+	private ObjectOutputStream outToServer;			//Stream to send objects 
 
-	private ObjectInputStream inFromServer = null;
-	private ObjectOutputStream outToServer = null;
+	//Boolean
+	private boolean running;						//boolean reflecting if the client is running or not 
+	private boolean sendAllowed;					//boolean reflecting if sending is allowed of not
+	
+	//Integer
+	private int port;								//port to the server
 
-	private boolean running;
-
-	private ClientWindow window;
-	private boolean sendAllowed;
+	//Threads
+	private Thread sendThread, recieveThread;		//Thread for sending and receiving
+	
+	//ClientWindow
+	private ClientWindow window;					//ClientWindow object
+	
+	//String
+	private String ip, name;						//Ip and name from user
 
 	public Client(String name, String ip, int port){
 		this.ip = ip;
 		this.port = port;
 		this.name = name;
-		openConnection(ip, port);														//Open connection
+		inFromServer = null;
+		outToServer = null;
+		openConnection(ip, port);														//Open connection to the server
 	}
 
 	/**
@@ -47,19 +58,13 @@ public class Client {
 	 */
 	public boolean openConnection(String ip, int port){
 		try {
-			inet_ip = InetAddress.getByName(ip);									//Make String ip to Inet-address ip
-			System.out.println("got ip");
-			socket = new Socket(inet_ip, port);										//Make a socket connection to ip and port
-			System.out.println("got socket");
-			inFromServer = new ObjectInputStream(socket.getInputStream());			//Create a inputstream TODO: Here is where it breaks.
-			System.out.println("got instream");
-			outToServer = new ObjectOutputStream(socket.getOutputStream());			//Creates a OutputStream
-			System.out.println("got outstream");
-			running = true;
-			sendAllowed = true;
-			System.out.println("got everything");
+			inet_ip = InetAddress.getByName(ip);										//Make String ip to Inet-address ip
+			socket = new Socket(inet_ip, port);											//Make a socket connection to ip and port
+			inFromServer = new ObjectInputStream(socket.getInputStream());				//Create a inputstream 
+			outToServer = new ObjectOutputStream(socket.getOutputStream());				//Creates a OutputStream
+			running = true;																//Set running to true
+			sendAllowed = true;															//set sendAllowed to true
 		} catch (IOException e) {
-			System.out.println("Reconnecting"); //TODO: Remove.
 			return false;
 		}
 		return true;
@@ -77,9 +82,9 @@ public class Client {
 	 * @return	true/false - if it worked or not.
 	 */
 	public boolean reconnectToServer(String name, String ip, int port){
-		if(openConnection(ip, port)){												//Open connection
-			send(name);																//Send name to server for verify
-			receive();																//Start receive messages
+		if(openConnection(ip, port)){													//Open connection
+			send(name);																	//Send name to server for verify
+			receive();																	//Start receive messages
 			return true;
 		}
 		return false;
@@ -110,12 +115,12 @@ public class Client {
 	 * during the verifying, if it is true create a CilentWindow
 	 * 
 	 * @param name
-	 * @return
+	 * @return verify - true/false if the user is allowed to connect
 	 */
 	public boolean verifyConnection(String userName){
 		send(userName);																	//Send name to server for verify
 
-		boolean verify = false;
+		boolean verify = false;															//Create a verify boolean temp-variable
 		try {
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
@@ -137,17 +142,16 @@ public class Client {
 		recieveThread = new Thread("Receive-Thread"){									//Thread
 			public void run(){
 				try {
-					while(running){
+					while(running){														//Loop until program not running
 						Object message = inFromServer.readObject();						//wait to put message from stream to string
-						System.out.println("Recieve from server: " + message);			// TODO: Remove	
 
 						if((message.equals(Identifier.MESSAGE))){
 							String text = (String) inFromServer.readObject();
 							window.receive(text);										//Send message to ClientWindow
-						}else if(message.equals(Identifier.USER)){
+						}else if(message.equals(Identifier.USER)){	
 							Object user = inFromServer.readObject();					//Receive name of user online
 							ArrayList<String> users = new ArrayList<>();	
-							while(!user.equals(Identifier.NO_MORE_USERS)){
+							while(!user.equals(Identifier.NO_MORE_USERS)){				//Loop until Identifier says NO_MORE_USERS
 								users.add((String) user);								//add user to users.list
 								user = inFromServer.readObject();						//Receive name of another user, if there are more
 							}
@@ -155,12 +159,12 @@ public class Client {
 						}
 					}
 				} catch (IOException | ClassNotFoundException e) {
-					sendAllowed = false;
+					sendAllowed = false;												//Set sendAllowed to false
 					window.printToScreen("Instachat: Lost connection to server! Trying to reconnect to server...");
-					disconnect();													//Disconnect sockets and streams
+					disconnect();														//Disconnect sockets and streams
 					boolean connected = false;
-					while(!connected){												//Try to reconnect	
-						connected = reconnectToServer(name, ip, port); 
+					while(!connected){													//Loop for reconnecting
+						connected = reconnectToServer(name, ip, port); 					//Try to reconnect
 					}
 					window.printToScreen("Instachat: You have been reconnected to the server!");
 					
@@ -188,18 +192,17 @@ public class Client {
 	 */
 	public void send(final String message){
 		if(sendAllowed){
-			sendThread = new Thread("Send-Thread"){
+			sendThread = new Thread("Send-Thread"){										//Send Thread
 				public void run(){
 					try {
 						outToServer.writeObject(message);								//Send message through the stream
-						System.out.println("Write to server: " + message);
 						outToServer.flush();											//Flushes the stream
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
 			};
-			sendThread.start();
+			sendThread.start();															//Starts the send thread
 		}
 	}
 
@@ -213,8 +216,8 @@ public class Client {
 			inFromServer.close();														//Close input-stream
 			outToServer.close();														//Close output-stream
 			socket.close();																//Close socket
-			running = false;
-			sendAllowed = false;
+			running = false;															//Set running to false
+			sendAllowed = false;														//Set sendAllowed to false
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

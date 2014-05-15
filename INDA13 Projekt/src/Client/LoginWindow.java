@@ -13,26 +13,40 @@ import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * LoginWindow is a class that handles the login window
+ * 
+ * The loginWindow itself it a JFrame
+ * 
+ * It creates the window that the user later inputs the information
+ * to connect to the server
+ * 
+ * @author Felix De Silva
+ * @date 15 maj 2014
+ */
+@SuppressWarnings("serial")
 public class LoginWindow extends JFrame {
-	private static final long serialVersionUID = 6057296788704641384L;
-	private JPanel panel;
-	private JTextField textIp;
-	private JTextField textName;
-	private JTextField textPort;
+	//Swing - related
+	private JPanel panel;						//Panel for the window
+	private JTextField textIp;					//Ip-address from the window
+	private JTextField textName;				//Name from the window
+	private JTextField textPort;				//Port from the window
 
+	//Client
 	private Client client;
 
 	/**
 	 * Constructor for LoginWindow
 	 */
 	public LoginWindow() {
-		define();
+		define();																							//Define the window	
 	}
 
 	/**
 	 * Defines the contents in the LoginWindow.
 	 * 
 	 * All its content is defines and creates here
+	 * Including all actionlistening is defines here
 	 */
 	private void define(){
 		try {
@@ -56,7 +70,7 @@ public class LoginWindow extends JFrame {
 
 		//IP-Address  - TextField
 		textIp = new JTextField();
-		textIp.addActionListener(new ActionListener() {
+		textIp.addActionListener(new ActionListener() {														//ActionListener for clicking ENTER
 			public void actionPerformed(ActionEvent e) {
 				try{
 					int port = Integer.parseInt(textPort.getText());
@@ -82,15 +96,15 @@ public class LoginWindow extends JFrame {
 
 		//Screen Name  - TextField
 		textName = new JTextField();
-		textName.addActionListener(new ActionListener() {
+		textName.addActionListener(new ActionListener() {													//ActionListener for clicking ENTER
 			public void actionPerformed(ActionEvent e) {
 				try{
-					int port = Integer.parseInt(textPort.getText());
+					int port = Integer.parseInt(textPort.getText());										//Make String-port to integer-port
 					try{
-						client = new Client(textName.getText(), textIp.getText(), port);
-						if(LoginCheck(client)){
-							client.send(textName.getText() + " has joined the chat!");
-							client.receive();
+						client = new Client(textName.getText(), textIp.getText(), port);					//Create a Client Object
+						if(LoginCheck(client)){																//Check if login is okay
+							client.send(textName.getText() + " has joined the chat!");						//Send a message that you have joined
+							client.receive();																//Start receiving
 						}else{
 							client = null;
 						}
@@ -108,15 +122,15 @@ public class LoginWindow extends JFrame {
 
 		//Port - TextField
 		textPort = new JTextField();
-		textPort.addActionListener(new ActionListener() {
+		textPort.addActionListener(new ActionListener() {													//ActionListener for clicking ENTER
 			public void actionPerformed(ActionEvent arg0) {
 				try{
-					int port = Integer.parseInt(textPort.getText());
+					int port = Integer.parseInt(textPort.getText());										//Make String-port to integer-port
 					try{
-						client = new Client(textName.getText(), textIp.getText(), port);
-						if(LoginCheck(client)){
-							client.send(textName.getText() + " has joined the chat!");
-							client.receive();
+						client = new Client(textName.getText(), textIp.getText(), port);					//Create a Client Object
+						if(LoginCheck(client)){																//Check if login is okay
+							client.send(textName.getText() + " has joined the chat!");						//Send a message that you have joined
+							client.receive();																//Start receiving
 						}else{
 							client = null;
 						}
@@ -149,15 +163,15 @@ public class LoginWindow extends JFrame {
 		//Login - Button
 		JButton btnNewButton = new JButton("Login");
 		btnNewButton.setBounds(130, 347, 100, 30);
-		btnNewButton.addActionListener(new ActionListener() {		//ActionListener for Clicking the button
+		btnNewButton.addActionListener(new ActionListener() {												//ActionListener for Clicking the button
 			public void actionPerformed(ActionEvent arg0) {
 				try{
-					int port = Integer.parseInt(textPort.getText());
+					int port = Integer.parseInt(textPort.getText());										//Make String-port to integer-port
 					try{
-						client = new Client(textName.getText(), textIp.getText(), port);
-						if(LoginCheck(client)){
-							client.send(textName.getText() + " has joined the chat!");
-							client.receive();
+						client = new Client(textName.getText(), textIp.getText(), port);					//Create a Client Object
+						if(LoginCheck(client)){																//Check if login is okay
+							client.send(textName.getText() + " has joined the chat!");						//Send a message that you have joined
+							client.receive();																//Start receiving
 						}else{
 							client = null;
 						}
@@ -175,19 +189,16 @@ public class LoginWindow extends JFrame {
 	/**
 	 * Login Procedure
 	 * 
-	 * Checks that all the inputs are correct
+	 * Checks that it is okay to connect to the server
+	 * @param client - The backend for clientWindow
+	 * @return connect - True/False if you'r allowed to connect
 	 */
 	public boolean LoginCheck(Client client){
 		boolean connect = false;
-		System.out.println(textName.getText());
-		System.out.println(textIp.getText());
-		System.out.println(textPort.getText());
-		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){
-			if(textName.getText().length() > 0 && textName.getText().length() <= 14){
-				if(client.verifyConnection(textName.getText())){
-					if(client.isConnectionOpen()){
+		if(!textName.getText().equals("") && !textIp.getText().equals("") && !textPort.getText().equals("")){	//Check is name, ip and port is not empty
+			if(textName.getText().length() <= 14){																//Check that name is longer then 14 characters
+				if(client.verifyConnection(textName.getText())){												//Check if you are allowed to connect
 						connect = true;
-					}
 				}else{
 					JOptionPane.showMessageDialog(null, "Username is unavailable");
 				}

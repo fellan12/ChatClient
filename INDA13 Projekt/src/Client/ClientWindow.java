@@ -14,36 +14,45 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * ClientWindow class that handles the Screen
- * that all the messages print
+ * ClientWindow is the class that handles the window for which the user
+ * uses to send and recieve messages
+ * 
+ * ClientWindow itself is a JFrame
  * 
  * @author Felix De Silva
+ * @date 15 maj 2014
  */
 @SuppressWarnings("serial")
 public class ClientWindow extends JFrame{
+	//Swing - related
+	private JPanel panel;						//Panel for the window
+	private JMenuBar menuBar;					//MenuBar for the window
+	private JTextField txtMessage;				//TextFiled for the window
+	private JTextArea textConversation;			//Conversation area for the window
+	private JTextArea onlineList;				//Online user area for the window
 
-	private JPanel panel;
-	private String name;
-	private JMenuBar menuBar;
-	private JTextField txtMessage;
-	private JTextArea textConveration;
+	//String
+	private String name;						//Name of the user
 
-	private Client client;
-	private JTextArea onlineList;
+	//Client
+	private Client client;						//Client object
 
 	/**
 	 * Constructor for ClientWindow
+	 * 
+	 * @param client - The backend for this class
 	 */
 	public ClientWindow(final Client client){
 		this.client = client;
 		this.name = client.getName();
-		define();																	//Create the window
+		define();																		//Create the window
 	}
 
 	/**
 	 * Defines the content in ClientWindow
 	 * 
 	 * All its content is defines and creates here
+	 * including all the actionlistening is defines here
 	 */
 	public void define(){
 		//Panel
@@ -56,7 +65,7 @@ public class ClientWindow extends JFrame{
 		setTitle(client.getName() + " - InstaChat");
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		addWindowListener(new WindowAdapter() {											//Operations for closing the window
 			public void windowClosing(WindowEvent arg0) {
 				client.disconnect();
 			}
@@ -65,7 +74,7 @@ public class ClientWindow extends JFrame{
 		setResizable(true);	
 		setLocationRelativeTo(null);
 		setMinimumSize(new Dimension(270,187));
-		addComponentListener(new ComponentAdapter(){								//Set the minimum size for the window
+		addComponentListener(new ComponentAdapter(){									//Set the minimum size for the window
 			public void componentResized(ComponentEvent e){
 				Dimension d= getSize();
 				Dimension minD=getMinimumSize();
@@ -80,23 +89,23 @@ public class ClientWindow extends JFrame{
 
 		//Layout -GridBagLayout
 		GridBagLayout layout = new GridBagLayout();
-		layout.columnWidths = new int[]{45, 805, 148, 2};							//sum = 1000
-		layout.rowHeights = new int[]{75, 695, 30};									//sum = 800
+		layout.columnWidths = new int[]{45, 805, 148, 2};								//sum = 1000
+		layout.rowHeights = new int[]{75, 695, 30};										//sum = 800
 		panel.setLayout(layout);
 
 
 		//On Screen Conversation - TextArea/JScrollPane
-		textConveration = new JTextArea();
-		textConveration.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent arg0) {
-				txtMessage.requestFocusInWindow();											//Sets focus on the message input
+		textConversation = new JTextArea();
+		textConversation.addMouseListener(new MouseAdapter() {							//MouseListener for clicking the conversation area						
+			public void mouseClicked(MouseEvent arg0) {			
+				txtMessage.requestFocusInWindow();										//Sets focus on the message input
 			}
 		});
-		textConveration.setFont(new Font("Arial", Font.PLAIN, 18));
-		textConveration.setEditable(false);
-		textConveration.setLineWrap(true);
-		textConveration.setWrapStyleWord(true);
-		JScrollPane scroll = new JScrollPane(textConveration);
+		textConversation.setFont(new Font("Arial", Font.PLAIN, 18));
+		textConversation.setEditable(false);
+		textConversation.setLineWrap(true);
+		textConversation.setWrapStyleWord(true);
+		JScrollPane scroll = new JScrollPane(textConversation);
 		GridBagConstraints scrollConstrains = new GridBagConstraints();
 		scrollConstrains.insets = new Insets(0, 0, 5, 5);
 		scrollConstrains.fill = GridBagConstraints.BOTH;
@@ -110,9 +119,9 @@ public class ClientWindow extends JFrame{
 
 		//On Screen OnlineList - TextArea/JScrollPane
 		onlineList = new JTextArea();
-		onlineList.addMouseListener(new MouseAdapter() {
+		onlineList.addMouseListener(new MouseAdapter() {								//MouseListener for clicking the online user area
 			public void mouseClicked(MouseEvent e) {
-				txtMessage.requestFocusInWindow();											//Sets focus on the message input
+				txtMessage.requestFocusInWindow();										//Sets focus on the message input
 			}
 		});
 		onlineList.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -132,10 +141,10 @@ public class ClientWindow extends JFrame{
 
 		//Message Field - TextField
 		txtMessage = new JTextField();
-		txtMessage.addKeyListener(new KeyAdapter() {
+		txtMessage.addKeyListener(new KeyAdapter() {									//ActionListener for clicking ENTER
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode() == KeyEvent.VK_ENTER && !txtMessage.getText().equals("")){
-					sendMessage(txtMessage.getText());
+					sendMessage(txtMessage.getText());									//Send the message
 				}
 			}
 		});
@@ -155,9 +164,9 @@ public class ClientWindow extends JFrame{
 		//Send - Button
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {							//ActionListener for clicking button
-				sendMessage(txtMessage.getText());
-				txtMessage.requestFocusInWindow();
+			public void actionPerformed(ActionEvent arg0) {								//ActionListener for clicking button
+				sendMessage(txtMessage.getText());										//Send the message
+				txtMessage.requestFocusInWindow();										//Sets the fokus to the messageFiled
 			}
 		});
 		GridBagConstraints sendButtonConstrains = new GridBagConstraints();
@@ -180,35 +189,36 @@ public class ClientWindow extends JFrame{
 
 		//MenuItem - Open
 		JMenuItem menuItemOpen = new JMenuItem("Save");
-		menuItemOpen.addActionListener(new ActionListener() {						//ActionListener for Save
+		menuItemOpen.addActionListener(new ActionListener() {							//ActionListener for Save
 			public void actionPerformed(ActionEvent arg0) {
-				save();
+				save();																	//Saves the conversation
 			}
 		});
 		fileMenu.add(menuItemOpen);
 
 		//MenuItem - Exit
 		JMenuItem menuItemExit = new JMenuItem("Exit");
-		menuItemExit.addActionListener(new ActionListener() {						//ActionListener for Exit
+		menuItemExit.addActionListener(new ActionListener() {							//ActionListener for Exit
 			public void actionPerformed(ActionEvent arg0) {	
-				client.disconnect();
-				dispose();
-				System.exit(0);
+				client.disconnect();													//Disconnect from the server
+				dispose();																//Dispose of the window
+				System.exit(0);															//Exit the application
 			}
 		});
 		fileMenu.add(menuItemExit);
-		
+
 		txtMessage.requestFocusInWindow();
 	}
 
 	/**
 	 * Print the message to the screen
+	 * and sets the caret to the bottom of the textConversation
 	 * 
 	 * @param message
 	 */
 	public void printToScreen(String message){
-		textConveration.append(message + "\n");										//Print the message to the screen
-		textConveration.setCaretPosition(textConveration.getDocument().getLength());//Sets the caret at the botton
+		textConversation.append(message + "\n");	 									//Print the message to the screen
+		textConversation.setCaretPosition(textConversation.getDocument().getLength());	//Sets the caret at the botton
 	}
 
 	/**
@@ -216,50 +226,57 @@ public class ClientWindow extends JFrame{
 	 * 
 	 * Builds a string with alla the users online and
 	 * put it on the onlineList
+	 * 
+	 * @param users - The list of online users
 	 */
 	public void updateOnlineUserList(ArrayList<String> users){
 		StringBuilder list = new StringBuilder();
-		for(String name : users){													//Iterates though the user-list
-			list.append(name + "\n");										 		//Append it to a StringBuilder
+		for(String name : users){														//Iterates though the user-list
+			list.append(name + "\n");											 		//Append it to a StringBuilder
 		}
 
-		onlineList.setText(list.toString());										//Set onlineList to StringBuilder-list
+		onlineList.setText(list.toString());											//Set onlineList to StringBuilder-list
 	}
 
 
 	/**
 	 * send to the server
 	 * 
-	 * @param message
+	 * @param message - the message the user wants to send
 	 */
 	public void sendMessage(String message){
-		if(!message.equals("")){													//Checks that the message isnt empty
-			String text = name + ": " + message;									//Adds the name of the send to the message
-			client.send(text);														//Send the message though the client
-			txtMessage.setText("");													//Set message textfield to empty-string.
+		if(!message.equals("")){														//Checks that the message isnt empty
+			String text = name + ": " + message;										//Adds the name of the send to the message
+			client.send(text);															//Send the message though the client
+			txtMessage.setText("");														//Set message textfield to empty-string.
 		}
 	}
 
 	/**
 	 * Receive a message from client and print it to the screen
-	 * @param output
+	 * @param fromServer - the message from the server
 	 */
 	public void receive(String fromServer){
-		printToScreen(fromServer);													//Print to screen
+		printToScreen(fromServer);														//Print to screen
 	}
 
 	/**
 	 * Saves the current textConversation to a txt-file on the same location as the application.
+	 * Adds the date to the file name
 	 */
 	public void save(){
 		try {
-			DateFormat dateformat = new SimpleDateFormat("HH-mm-ss_dd-MM-yy");		//Dataformat
-			Date currentDate = new Date();											//Get the current date
+			if(!textConversation.getText().equals("")){
+				DateFormat dateformat = new SimpleDateFormat("HH-mm-ss_dd-MM-yy");		//Dataformat
+				Date currentDate = new Date();											//Get the current date
 
-			BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation_ " + dateformat.format(currentDate) + ".txt")); //Create a savefile
-			saveFile.write(textConveration.getText());								//Write textConvesation to file
-			saveFile.close();														//Close the file
-			JOptionPane.showMessageDialog(null, "Saved Conversation");
+				BufferedWriter saveFile = new BufferedWriter(new FileWriter("Saved_Conversation_ " + dateformat.format(currentDate) + ".txt")); //Create a savefile
+				saveFile.write(textConversation.getText());								//Write textConvesation to file
+				saveFile.close();														//Close the file
+				JOptionPane.showMessageDialog(null, "Saved Conversation");
+			}else{
+				JOptionPane.showMessageDialog(null, "Nothing to save");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
