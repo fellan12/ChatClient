@@ -21,7 +21,6 @@ import java.util.Date;
  */
 @SuppressWarnings("serial")
 public class ClientWindow extends JFrame{
-
 	private JPanel panel;
 	private String name;
 	private JMenuBar menuBar;
@@ -32,7 +31,9 @@ public class ClientWindow extends JFrame{
 	private JTextArea onlineList;
 
 	/**
-	 * Constructor for ClientWindow
+	 * Creates a new ClientWindow for the given client.
+	 * 
+	 * @param client The given client.
 	 */
 	public ClientWindow(final Client client){
 		this.client = client;
@@ -41,9 +42,8 @@ public class ClientWindow extends JFrame{
 	}
 
 	/**
-	 * Defines the content in ClientWindow
-	 * 
-	 * All its content is defines and creates here
+	 * Defines the content in ClientWindow.
+	 * All its content is defined and created here.
 	 */
 	public void define(){
 		//Panel
@@ -222,7 +222,6 @@ public class ClientWindow extends JFrame{
 		for(String name : users){													//Iterates though the user-list
 			list.append(name + "\n");										 		//Append it to a StringBuilder
 		}
-
 		onlineList.setText(list.toString());										//Set onlineList to StringBuilder-list
 	}
 
@@ -261,7 +260,7 @@ public class ClientWindow extends JFrame{
 			saveFile.close();														//Close the file
 			JOptionPane.showMessageDialog(null, "Saved Conversation");
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 	}

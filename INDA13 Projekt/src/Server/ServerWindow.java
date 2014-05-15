@@ -180,8 +180,7 @@ public class ServerWindow extends JFrame {
 			try {
 				setUp.await();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 			while (server != null) { // Server was successfully set up.
