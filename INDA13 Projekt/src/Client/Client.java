@@ -14,7 +14,6 @@ import Server.Identifier;
  * @author Felix De Silva
  * @date 15 maj 2014
  */
-
 public class Client {
 	//TCP - related
 	private Socket socket;							//Socket for connecting to the server
@@ -40,6 +39,14 @@ public class Client {
 	//String
 	private String ip, name;						//Ip and name from user
 
+	/**
+	 * Create a new chat client that communicates with the server
+	 * on the given port.
+	 * 
+	 * @param name The name of the user of this client.
+	 * @param ip The IP address of the server 
+	 * @param port The port 
+	 */
 	public Client(String name, String ip, int port){
 		this.ip = ip;
 		this.port = port;
@@ -50,7 +57,7 @@ public class Client {
 	}
 
 	/**
-	 * Try to connect to the server
+	 * Try to connect to the server.
 	 * 
 	 * @param ip - Ip-address to the server
 	 * @param port - Port to the server
@@ -71,14 +78,11 @@ public class Client {
 	}
 
 	/**
-	 * connect to server
-	 * 
-	 * Tries to open connection to server by open sockets and streams
-	 * and sends name to verify its not in use. 
-	 * 
-	 * @param name
-	 * @param ip
-	 * @param port
+	 * Tries to reconnect to the server on the given port. 
+	 *  
+	 * @param name The name of the client. 
+	 * @param ip The IP address of the server host.
+	 * @param port The port to which to connect.
 	 * @return	true/false - if it worked or not.
 	 */
 	public boolean reconnectToServer(String name, String ip, int port){
@@ -91,31 +95,36 @@ public class Client {
 	}
 
 	/**
-	 * Get the name of the user
+	 * Get the name of the user of this client.
 	 * 
-	 * @return name - the name of the user
+	 * @return The name of the user of this client.
 	 */
 	public String getName(){
 		return name;
 	}
 
 	/**
-	 * Checks if the socked is connected to the server
+	 * Checks if the socket is connected to the server.
 	 * 
-	 * @return socket.isConnected() - true/false if there is a connection
+	 * @return True if the socket is connected to the server, false otherwise. 
 	 */
 	public boolean isConnectionOpen(){
 		return socket.isConnected();
 	}
 
 	/**
-	 * Send the name to the server and recieves a true/false message
-	 * if you are allowed to connect.
+	 * Send the name of this client to the server. The server returns a
+	 * boolean that tells the client whether it is allowed to connect. 
+	 * If it is, create a ClientWindow, if it isn't do nothing. Return
+	 * the value that is returned from the server.
 	 * 
-	 * during the verifying, if it is true create a CilentWindow
-	 * 
+<<<<<<< HEAD
 	 * @param name
 	 * @return verify - true/false if the user is allowed to connect
+=======
+	 * @param name The name of the user of this client.
+	 * @return True if the client is allowed to connect to server, false otherwise.
+>>>>>>> 546177001527fe68085a154de7ff1c5f9271ca0a
 	 */
 	public boolean verifyConnection(String userName){
 		send(userName);																	//Send name to server for verify
@@ -124,7 +133,7 @@ public class Client {
 		try {
 			verify = (boolean) inFromServer.readObject();								//wait to put message from stream to boolean
 		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		if(verify == true){
 			window = new ClientWindow(this); 											//Create a ClientWIndow
@@ -134,9 +143,6 @@ public class Client {
 
 	/**
 	 * Receives messages from the server.
-	 * 
-	 * @return message - the received message.
-	 * @throws IOException 
 	 */
 	public void receive() {
 		recieveThread = new Thread("Receive-Thread"){									//Thread
@@ -167,15 +173,13 @@ public class Client {
 						connected = reconnectToServer(name, ip, port); 					//Try to reconnect
 					}
 					window.printToScreen("Instachat: You have been reconnected to the server!");
-					
-					e.getStackTrace();
 				}
 			}
 
 			/**
-			 * Update online user list
+			 * Update online users list.
 			 * 
-			 * @param users
+			 * @param users The array of the users currently connected to the server.
 			 */
 			private void updateOnlinelist(ArrayList<String> users) {
 				if(users.size() > 0){
@@ -187,8 +191,7 @@ public class Client {
 	}
 
 	/**
-	 * Send messages to he server.
-	 * @throws IOException 
+	 * Send messages to the server.
 	 */
 	public void send(final String message){
 		if(sendAllowed){
@@ -198,7 +201,7 @@ public class Client {
 						outToServer.writeObject(message);								//Send message through the stream
 						outToServer.flush();											//Flushes the stream
 					} catch (IOException e) {
-						e.printStackTrace();
+						// e.printStackTrace();
 					}
 				}
 			};
@@ -207,9 +210,8 @@ public class Client {
 	}
 
 	/**
-	 * Disconnect from server
-	 * 
-	 * when you use the Exit button in the file-menubar
+	 * Disconnect from server. Close the streams and the socket.
+	 * Update the fields.
 	 */
 	public void disconnect(){
 		try {
@@ -219,7 +221,7 @@ public class Client {
 			running = false;															//Set running to false
 			sendAllowed = false;														//Set sendAllowed to false
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 	}

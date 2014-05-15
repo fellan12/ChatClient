@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * of a client-server chat system.
  * 
  * @author Richard Sjöberg
- * @version 2014-05-10
+ * @version 2014-05-15
  */
 public class Server {
 
@@ -78,13 +78,11 @@ public class Server {
 					}
 	
 					sendConnectionStatus(true, output);
-					System.out.println("Good to go!"); // TODO: Remove.
 					communicate(streams, sock, name); // Communicate with clients.
 					updateUsers();
 				} else {
 					// Client is not connected to server.
 					sendConnectionStatus(false, output);
-					System.out.println("Can't connect."); // TODO: Remove.
 				}
 			}
 		} catch (IOException e) {
@@ -118,8 +116,7 @@ public class Server {
 			
 			return streams;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 	}
@@ -137,11 +134,9 @@ public class Server {
 		
 		if (users.contains(name)) {
 			nameInUse = true;
-			System.out.println("Already in use. Can't connect."); // TODO: Remove.
 		} else {
 			nameInUse = false;
 			users.add(name);
-			System.out.println("Not in use. Good to connect!"); // TODO: Remove.
 		}
 		return nameInUse;
 	}
@@ -155,10 +150,8 @@ public class Server {
 		String name = null;
 		try {
 			name = (String) input.readObject();
-			System.out.println("Name request from client: " + name); // TODO: Remove.
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace(); 
 		} 
 		return name;
 	}
@@ -185,8 +178,7 @@ public class Server {
 			output.writeObject(connected);
 			output.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 	
@@ -196,14 +188,11 @@ public class Server {
 	 * or disconnected to the server; whenever users are added or 
 	 * removed from the users list. This is to insure that all 
 	 * clients know which users are connected to the chat room.
-	 * 
-	 * TODO: EXECUTE SOMEWHERE! In the chatService???
 	 */
 	private void updateUsers() {
 		// Send the users list on client
 		try {
 			for (ObjectOutputStream output : outStreams) {
-				System.out.println(users);
 				output.writeObject(Identifier.USER);
 				for(String name : users){
 					output.writeObject(name);
@@ -212,7 +201,7 @@ public class Server {
 				output.flush();
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 	
@@ -233,8 +222,7 @@ public class Server {
 			connections.add(chat);
 			communicate.start();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 		} 
 	}
 	
@@ -254,8 +242,7 @@ public class Server {
 			}
 			servSock.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 		
 		servSock = null;
@@ -279,7 +266,6 @@ public class Server {
 		ObjectInputStream input; // The input stream from which to read input.
 		ObjectOutputStream output; // The output stream of this client-server connection's socket.
 		String name; // The name of the user of this connection.
-		
 		
 		/**
 		 * Creates a new ChatService that handles the communication
@@ -309,7 +295,6 @@ public class Server {
 				try {
 					// OBS! The client can only send string messages to server! This may be changed for future versions.
 					String message = (String) input.readObject(); // The message read from socket.
-					System.out.println("Received message: " + message);
 					echoMessage(message); // Echoes the message to all clients connected to the server.`
 				} catch (Exception e) {
 					closeConnection();
@@ -323,9 +308,7 @@ public class Server {
 		/**
 		 * Closes the client-server connection, by closing its streams and socket.
 		 * Removes the user from the users list, the socket from clients and output
-		 * from outStreams.
-		 * 
-		 * Notifies all connected clients.
+		 * from outStreams. Notifies all connected clients.
 		 */
 		private void closeConnection() {
 			try {
@@ -336,8 +319,7 @@ public class Server {
 				outStreams.remove(output);
 				users.remove(name);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		
@@ -352,11 +334,9 @@ public class Server {
 				try {
 					output.writeObject(Identifier.MESSAGE);
 					output.writeObject(message);
-					System.out.println("Sent message: " + message);
 					output.flush();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 		}

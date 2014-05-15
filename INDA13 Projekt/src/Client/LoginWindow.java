@@ -36,7 +36,7 @@ public class LoginWindow extends JFrame {
 	private Client client;
 
 	/**
-	 * Constructor for LoginWindow
+	 * Create a new LoginWindow.
 	 */
 	public LoginWindow() {
 		define();																							//Define the window	
@@ -52,7 +52,7 @@ public class LoginWindow extends JFrame {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		//Frame
@@ -219,7 +219,7 @@ public class LoginWindow extends JFrame {
 					LoginWindow window = new LoginWindow();
 					window.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 		});
