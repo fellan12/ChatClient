@@ -38,15 +38,9 @@ public class ClientWindow extends JFrame{
 	private Client client;						//Client object
 
 	/**
-<<<<<<< HEAD
 	 * Constructor for ClientWindow
 	 * 
 	 * @param client - The backend for this class
-=======
-	 * Creates a new ClientWindow for the given client.
-	 * 
-	 * @param client The given client.
->>>>>>> 546177001527fe68085a154de7ff1c5f9271ca0a
 	 */
 	public ClientWindow(final Client client){
 		this.client = client;
@@ -55,15 +49,10 @@ public class ClientWindow extends JFrame{
 	}
 
 	/**
-<<<<<<< HEAD
 	 * Defines the content in ClientWindow
 	 * 
 	 * All its content is defines and creates here
 	 * including all the actionlistening is defines here
-=======
-	 * Defines the content in ClientWindow.
-	 * All its content is defined and created here.
->>>>>>> 546177001527fe68085a154de7ff1c5f9271ca0a
 	 */
 	public void define(){
 		//Panel

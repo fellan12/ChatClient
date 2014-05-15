@@ -118,13 +118,8 @@ public class Client {
 	 * If it is, create a ClientWindow, if it isn't do nothing. Return
 	 * the value that is returned from the server.
 	 * 
-<<<<<<< HEAD
-	 * @param name
-	 * @return verify - true/false if the user is allowed to connect
-=======
 	 * @param name The name of the user of this client.
 	 * @return True if the client is allowed to connect to server, false otherwise.
->>>>>>> 546177001527fe68085a154de7ff1c5f9271ca0a
 	 */
 	public boolean verifyConnection(String userName){
 		send(userName);																	//Send name to server for verify
